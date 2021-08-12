@@ -1,1 +1,1 @@
-bbbbUsing opengl 4.6 (Core Profile) Mesa 21.1.6
+Using opengl 4.6 (Core Profile) Mesa 21.1.6

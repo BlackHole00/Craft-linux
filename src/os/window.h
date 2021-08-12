@@ -7,8 +7,8 @@ typedef void* vx_UserStatePtr;
 
 typedef struct {
     char* title;
-    usize width;
-    usize height;
+    i32 width;
+    i32 height;
     bool fullscreen;
 
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*) init;

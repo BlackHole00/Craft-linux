@@ -23,11 +23,9 @@ vx_Window vx_window_new(vx_WindowDescriptor descriptor) {
     /* Initialize the library */
     vx_glfw_init();
 
-    printf("bbbb");
-
     /* Create a window */
-    //window.glfw_window = glfwCreateWindow(descriptor.width, descriptor.height, descriptor.title, descriptor.fullscreen ? glfwGetPrimaryMonitor(): NULL, NULL);
-    window.glfw_window = glfwCreateWindow(descriptor.width, descriptor.height, descriptor.title, NULL, NULL);
+    window.glfw_window = glfwCreateWindow(descriptor.width, descriptor.height, descriptor.title, descriptor.fullscreen ? glfwGetPrimaryMonitor(): NULL, NULL);
+    //window.glfw_window = glfwCreateWindow(descriptor.width, descriptor.height, descriptor.title, NULL, NULL);
 
     /* Crash if the window is NULL */
     VX_ASSERT_EXIT_OP("Could not open glfw window!", window.glfw_window, vx_glfw_terminate());
@@ -104,7 +102,5 @@ int fake_main() {
         /* Poll for and process events */
         glfwPollEvents();
     }
-
-    glfwTerminate();
     return 0;
 }

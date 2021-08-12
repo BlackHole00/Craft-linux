@@ -1,1 +1,1 @@
-Could not Initialize GLAD!
+Close called early!!!Close called early!!!

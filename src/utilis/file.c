@@ -10,6 +10,7 @@ char* vx_file_get_content(FILE* file) {
     /*  Get the initial position of the file. The user may still want to use the file.  */
     fpos_t intial_point_in_file;
     fgetpos(file, &intial_point_in_file);
+    rewind(file);
 
     /*  Get the file length. If the length is 0, then return NULL.  */
     i32 file_len = 0;
@@ -38,8 +39,8 @@ char* vx_file_get_content(FILE* file) {
 
 char* vx_filepath_get_content(const char* file_path) {
     FILE* file = fopen(file_path, "r");
+    VX_CHECK(file != NULL, NULL);
 
-    /*  vx_file_get_content() already checks if the file is not valid.  */
     char* res = vx_file_get_content(file);
 
     fclose(file);

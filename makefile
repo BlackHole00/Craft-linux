@@ -6,6 +6,7 @@ PROFILE	  = 0
 
 SRC_DIR   = src
 BUILD_DIR = build
+RES_DIR   = res
 OUTPUT    = app
 
 GLAD_INCLUDE = -I"libs/glad/includes"
@@ -81,11 +82,15 @@ temp.o:
 #####  TASKS  #####
 OBJS = $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
 
-all: clean build;
+all: clean prepare build;
 
 clean:
 	find build -name "*.o" -type f -delete
 	rm -f build/app
+
+prepare:
+	rm -rf $(BUILD_DIR)/$(RES_DIR)
+	cp -r $(RES_DIR) $(BUILD_DIR)/$(RES_DIR)
 
 build: glad utilis os gfx main
 	$(CC) $(OBJS) -o $(BUILD_DIR)/$(OUTPUT) $(ARGS)

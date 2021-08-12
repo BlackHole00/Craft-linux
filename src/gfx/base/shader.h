@@ -2,7 +2,12 @@
 #include <glad/glad.h>
 #include "../../utilis/utilis.h"
 
-typedef GLenum vx_GlShader_Type;
+typedef enum {
+    VX_GL_VERTEX_SHADER     = GL_VERTEX_SHADER,
+    VX_GL_FRAGMENT_SHADER   = GL_FRAGMENT_SHADER,
+    VX_GL_GEOMETRY_SHADER   = GL_GEOMETRY_SHADER,
+    VX_GL_COMPUTE_SHADER    = GL_COMPUTE_SHADER
+}vx_GlShader_Type;
 
 typedef struct {
     GLuint id;
