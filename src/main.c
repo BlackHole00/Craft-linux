@@ -8,8 +8,14 @@ typedef struct {
 } gm_State;
 
 void gm_init(gm_State* state, GLFWwindow* window) {
-    vx_GlShader vertex_shader = vx_glshader_new(VX_GL_VERTEX_SHADER, "res/shaders/basic.vs");
-    vx_GlShader fragment_shader = vx_glshader_new(VX_GL_FRAGMENT_SHADER, "res/shaders/basic.fs");
+    vx_GlShader vertex_shader   = vx_glshader_new(&(vx_GlShaderDescriptor){ 
+        .type = VX_GL_VERTEX_SHADER,
+        .shader_path = "res/shaders/basic.vs"
+    });
+    vx_GlShader fragment_shader = vx_glshader_new(&(vx_GlShaderDescriptor){
+        .type = VX_GL_FRAGMENT_SHADER,
+        .shader_path = "res/shaders/basic.fs"
+    });
 
     state->program = vx_glprogram_new_d(
         &vertex_shader,
@@ -19,22 +25,17 @@ void gm_init(gm_State* state, GLFWwindow* window) {
     );
 }
 
-void gm_logic(gm_State* state, GLFWwindow* window, f64 delta) {
-
-}
+void gm_logic(gm_State* state, GLFWwindow* window, f64 delta) {}
 
 void gm_draw(const gm_State* state) {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {
-
-}
+void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {}
 
 void gm_close(gm_State* state, GLFWwindow* window) {
     vx_glprogram_free(&state->program);
-    //printf("Close called early!!!");
 }
 
 int main(void)

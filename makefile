@@ -11,13 +11,13 @@ OUTPUT    = app
 
 GLAD_INCLUDE = -I"libs/glad/includes"
 
-INCLUDES  = -I"/urs/includes" $(GLAD_INCLUDE)
+INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE)
 LIBS      = -lglfw -lGL -ldl
 
 ifeq ($(PROFILE), 0)
-ARGS      = -std=c99 -g -O0 $(LIBS) $(INCLUDES)
+ARGS      = -std=c99 -g -O0 -D _DEBUG $(LIBS) $(INCLUDES)
 else
-ARGS	  = -std=c99 -O3 $(LIBS) $(INCLUDES)
+ARGS	  = -std=c99 -O3 -D _RELEASE $(LIBS) $(INCLUDES)
 endif
 
 _: all
@@ -76,8 +76,6 @@ shader.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/shader.c	-o $(GFX_BUILD_DIR)/base/shader.o	$(ARGS)
 glad.o:
 	$(CC) -c $(GLAD_SRC_DIR)/glad.c			-o $(GLAD_BUILD_DIR)/glad.o			$(ARGS)
-temp.o:
-	$(CC) -c $(SRC_DIR)/temp.c				-o $(BUILD_DIR)/temp.o				$(ARGS)
 
 #####  TASKS  #####
 OBJS = $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)

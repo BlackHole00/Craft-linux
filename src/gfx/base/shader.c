@@ -1,12 +1,13 @@
 #include "shader.h"
 
-vx_GlShader vx_glshader_new(vx_GlShader_Type gl_shader_type, char* shader_path) {
+vx_GlShader vx_glshader_new(vx_GlShaderDescriptor* descriptor) {
+    VX_NULL_ASSERT(descriptor);
     vx_GlShader shader;
 
-    char* shader_source = vx_filepath_get_content(shader_path);
+    char* shader_source = vx_filepath_get_content(descriptor->shader_path);
     VX_ASSERT("Could not read shader source!", shader_source != NULL);
 
-    shader.id = glCreateShader(gl_shader_type);
+    shader.id = glCreateShader(descriptor->type);
     glShaderSource(shader.id, 1, (const GLchar**)&shader_source, NULL);
     glCompileShader(shader.id);
 
@@ -19,7 +20,7 @@ vx_GlShader vx_glshader_new(vx_GlShader_Type gl_shader_type, char* shader_path) 
 
         if (!success) {
             glGetShaderInfoLog(shader.id, 1024, NULL, info_log);
-            printf("Could not compile shader %s:\n%s\n", shader_path, info_log);
+            printf("Could not compile shader %s:\n%s\n", descriptor->shader_path, info_log);
         }
     }
 
@@ -27,12 +28,13 @@ vx_GlShader vx_glshader_new(vx_GlShader_Type gl_shader_type, char* shader_path) 
 }
 
 void vx_glshader_free(vx_GlShader* shader) {
+    VX_NULL_ASSERT(shader);
     glDeleteShader(shader->id);
 }
 
 vx_GlProgram vx_glprogram_new(vx_GlShader* vertex_shader, vx_GlShader* fragment_shader, vx_GlShader* geometry_shader, vx_GlShader* compute_shader) {
-    VX_ASSERT("Vertex shader in program is NULL", vertex_shader != NULL);
-    VX_ASSERT("Fragment shader in program is NULL", fragment_shader != NULL);
+    VX_NULL_ASSERT(vertex_shader);
+    VX_NULL_ASSERT(fragment_shader);
 
     vx_GlProgram program;
     program._uniform_locations = vx_vector_new();
@@ -60,11 +62,11 @@ vx_GlProgram vx_glprogram_new_d(vx_GlShader* vertex_shader, vx_GlShader* fragmen
 }
 
 void vx_glprogram_free(vx_GlProgram* shader) {
+    VX_NULL_ASSERT(shader);
     glDeleteProgram(shader->id);
 
     vx_vector_free(&shader->_uniform_locations);
 }
 
-_VX_OPTION_CREATE_BODY_FOR_TYPE(vx_GlShader);
 _VX_OPTION_CREATE_BODY_FOR_TYPE(vx_GlProgramUniformLocationRecord)
 _VX_VECTOR_CREATE_BODY_FOR_TYPE(vx_GlProgramUniformLocationRecord)

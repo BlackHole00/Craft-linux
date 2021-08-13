@@ -25,7 +25,6 @@ vx_Window vx_window_new(vx_WindowDescriptor descriptor) {
 
     /* Create a window */
     window.glfw_window = glfwCreateWindow(descriptor.width, descriptor.height, descriptor.title, descriptor.fullscreen ? glfwGetPrimaryMonitor(): NULL, NULL);
-    //window.glfw_window = glfwCreateWindow(descriptor.width, descriptor.height, descriptor.title, NULL, NULL);
 
     /* Crash if the window is NULL */
     VX_ASSERT_EXIT_OP("Could not open glfw window!", window.glfw_window, vx_glfw_terminate());
@@ -51,6 +50,7 @@ vx_Window vx_window_new(vx_WindowDescriptor descriptor) {
 }
 
 void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
+    VX_NULL_ASSERT(self);
     self->user_state = user_state;
 
     self->descriptor.init(self->user_state, self->glfw_window);
@@ -66,41 +66,4 @@ void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
     self->descriptor.close(self->user_state, self->glfw_window);
 
     vx_glfw_terminate();
-}
-
-int fake_main() {
-    GLFWwindow* window;
-
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
-
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-
-    if (!(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))) {
-        printf("Could not Initialize GLAD!");
-    }
-
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
-    return 0;
 }

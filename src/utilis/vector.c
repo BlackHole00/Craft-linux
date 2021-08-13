@@ -12,10 +12,12 @@ vx_Vector vx_vector_new() {
 }
 
 void vx_vector_free(vx_Vector* self) {
+    VX_NULL_ASSERT(self);
     free(self->data);
 }
 
 void vx_vector_clear(vx_Vector* self) {
+    VX_NULL_ASSERT(self);
     self->data = vx_srealloc(self->data, 0);
     self->length = 0;
     self->_mem_length = 0;

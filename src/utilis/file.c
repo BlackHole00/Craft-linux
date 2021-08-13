@@ -3,7 +3,7 @@
 
 char* vx_file_get_content(FILE* file) {
     /*  Check if the file is valid  */
-    VX_CHECK(file != NULL, NULL);
+    VX_NULL_CHECK(file, NULL);
 
     char* res;
 
