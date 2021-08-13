@@ -1,3 +1,3 @@
-*.o
+**/*.o
 log.txt
 /build/app
