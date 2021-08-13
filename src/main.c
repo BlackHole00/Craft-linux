@@ -28,17 +28,18 @@ void gm_init(gm_State* state, GLFWwindow* window) {
     );
     vx_glprogram_uniform_f32(&state->program, "uAlpha", 1.0);
 
-    state->buffer = vx_glbuffer_new(&(vx_GlBufferDescriptor){
-        .type = VX_GL_VERTEX_BUFFER,
-        .usage = VX_GL_STATIC_DRAW
-    });
-
     float data[] = {
         -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
          0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
          0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
     };
-    vx_glbuffer_data(&state->buffer, data, sizeof(data));
+    state->buffer = vx_glbuffer_new(&(vx_GlBufferDescriptor){
+        .type = VX_GL_VERTEX_BUFFER,
+        .usage = VX_GL_STATIC_DRAW
+    }, &(vx_GlBufferData){
+        .data = data,
+        .data_size = sizeof(data)
+    });
 
     state->layout = vx_gllayout_new(&(vx_GlLayoutDescriptor){
         .element_number = 2,

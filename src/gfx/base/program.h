@@ -23,4 +23,5 @@ void vx_glprogram_free(vx_GlProgram*);
 void vx_glprogram_bind(const vx_GlProgram*);
 void vx_glprogram_unbind();
 
-void vx_glprogram_uniform_f32(vx_GlProgram*, char*, f32);
+/*  In the future I'll add more types...    */
+void VX_TEMPLATE_NAME(f32, vx_glprogram_uniform)(vx_GlProgram*, char*, f32);

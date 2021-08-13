@@ -73,7 +73,7 @@ void vx_glprogram_unbind() {
     glUseProgram(0);
 }
 
-void vx_glprogram_uniform_f32(vx_GlProgram* program, char* uniform_name, f32 value) {
+void VX_TEMPLATE_NAME(f32, vx_glprogram_uniform)(vx_GlProgram* program, char* uniform_name, f32 value) {
     VX_NULL_ASSERT(program);
 
     vx_glprogram_bind(program);

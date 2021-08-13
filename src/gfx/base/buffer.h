@@ -15,6 +15,11 @@ typedef enum {
 } vx_GlBufferUsage;
 
 typedef struct {
+    const void* data;
+    usize data_size;
+} vx_GlBufferData;
+
+typedef struct {
     vx_GlBufferType type;
     vx_GlBufferUsage usage;
 } vx_GlBufferDescriptor;
@@ -24,8 +29,8 @@ typedef struct {
     GLuint id;
 } vx_GlBuffer;
 
-vx_GlBuffer vx_glbuffer_new(const vx_GlBufferDescriptor*);
+vx_GlBuffer vx_glbuffer_new(const vx_GlBufferDescriptor*, const vx_GlBufferData*);
 void vx_glbuffer_bind(const vx_GlBuffer*);
-void vx_glbuffer_data(const vx_GlBuffer*, const void*, usize);
+void vx_glbuffer_data(const vx_GlBuffer*, const vx_GlBufferData*);
 void vx_glbuffer_free(const vx_GlBuffer*);
 #define vx_glbuffer_unbind(_GL_BUFFER_TYPE) glBindBuffer((_GL_BUFFER_TYPE), 0) 
