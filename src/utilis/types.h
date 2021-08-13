@@ -18,6 +18,9 @@ typedef float f32;
 typedef double f64;
 
 typedef size_t usize;
-//typedef ssize_t isize; 
+
+#ifdef __ssize_t_defined
+typedef ssize_t isize;
+#endif
 
 typedef char* rawstr;

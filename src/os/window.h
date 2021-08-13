@@ -40,7 +40,7 @@ void vx_glfw_init();
 void vx_glfw_terminate();
 #define vx_glfw_window_hint(_HINT, _VALUE) glfwWindowHint((_HINT), (_VALUE));
 
-vx_Window vx_window_new(vx_WindowDescriptor);
+vx_Window vx_window_new(vx_WindowDescriptor*);
 void vx_window_run(vx_Window*, vx_UserStatePtr);
 
 int fake_main();

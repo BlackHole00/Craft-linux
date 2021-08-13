@@ -3,8 +3,8 @@
 #include <stdio.h>
 
 typedef struct {
-    u32 idk;
     vx_GlProgram program;
+    vx_GlBuffer  buffer;
 } gm_State;
 
 void gm_init(gm_State* state, GLFWwindow* window) {
@@ -23,6 +23,19 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         NULL,
         NULL
     );
+
+    state->buffer = vx_glbuffer_new(&(vx_GlBufferDescriptor){
+        .type = VX_GL_VERTEX_BUFFER,
+        .usage = VX_GL_STATIC_DRAW
+    });
+
+    float data[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f
+    };
+    vx_glbuffer_data(&state->buffer, data, VX_SIZE_OF_CVECTOR(data));
+    vx_glbuffer_unbind(VX_GL_VERTEX_BUFFER);
 }
 
 void gm_logic(gm_State* state, GLFWwindow* window, f64 delta) {}
@@ -36,6 +49,7 @@ void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {}
 
 void gm_close(gm_State* state, GLFWwindow* window) {
     vx_glprogram_free(&state->program);
+    vx_glbuffer_free(&state->buffer);
 }
 
 int main(void)
@@ -55,7 +69,7 @@ int main(void)
     descriptor.resize   = (vx_Callback)gm_resize;
     descriptor.close    = (vx_Callback)gm_close;
 
-    vx_Window window = vx_window_new(descriptor);
+    vx_Window window = vx_window_new(&descriptor);
 
     gm_State state;
     vx_window_run(&window, (vx_UserStatePtr)&state);

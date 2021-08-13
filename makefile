@@ -36,10 +36,10 @@ OS_BUILD_DIR     = $(BUILD_DIR)/os
 OS_OBJ			 = $(OS_BUILD_DIR)/window.o
 
 #	GFX
-gfx:	shader.o;
+gfx:	shader.o program.o buffer.o;
 GFX_SRC_DIR		 = $(SRC_DIR)/gfx
 GFX_BUILD_DIR    = $(BUILD_DIR)/gfx
-GFX_OBJ			 = $(GFX_BUILD_DIR)/base/shader.o
+GFX_OBJ			 = $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o
 
 #	GLAD
 glad:	glad.o;
@@ -74,19 +74,23 @@ window.o:
 	$(CC) -c $(OS_SRC_DIR)/window.c 		-o $(OS_BUILD_DIR)/window.o			$(ARGS)
 shader.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/shader.c	-o $(GFX_BUILD_DIR)/base/shader.o	$(ARGS)
+program.o:
+	$(CC) -c $(GFX_SRC_DIR)/base/program.c  -o $(GFX_BUILD_DIR)/base/program.o  $(ARGS)
+buffer.o:
+	$(CC) -c $(GFX_SRC_DIR)/base/buffer.c   -o $(GFX_BUILD_DIR)/base/buffer.o   $(ARGS)
 glad.o:
 	$(CC) -c $(GLAD_SRC_DIR)/glad.c			-o $(GLAD_BUILD_DIR)/glad.o			$(ARGS)
 
 #####  TASKS  #####
 OBJS = $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
 
-all: clean prepare build;
+all: clean build_prepare build;
 
 clean:
 	find build -name "*.o" -type f -delete
 	rm -f build/app
 
-prepare:
+build_prepare:
 	rm -rf $(BUILD_DIR)/$(RES_DIR)
 	cp -r $(RES_DIR) $(BUILD_DIR)/$(RES_DIR)
 
@@ -95,3 +99,4 @@ build: glad utilis os gfx main
 
 run: all
 	./$(BUILD_DIR)/$(OUTPUT)
+	cat log.txt

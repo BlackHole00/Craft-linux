@@ -17,14 +17,16 @@ void vx_glfw_terminate() {
     }
 }
 
-vx_Window vx_window_new(vx_WindowDescriptor descriptor) {
+vx_Window vx_window_new(vx_WindowDescriptor* descriptor) {
+    VX_NULL_ASSERT(descriptor);
+
     vx_Window window;
 
     /* Initialize the library */
     vx_glfw_init();
 
     /* Create a window */
-    window.glfw_window = glfwCreateWindow(descriptor.width, descriptor.height, descriptor.title, descriptor.fullscreen ? glfwGetPrimaryMonitor(): NULL, NULL);
+    window.glfw_window = glfwCreateWindow(descriptor->width, descriptor->height, descriptor->title, descriptor->fullscreen ? glfwGetPrimaryMonitor(): NULL, NULL);
 
     /* Crash if the window is NULL */
     VX_ASSERT_EXIT_OP("Could not open glfw window!", window.glfw_window, vx_glfw_terminate());
@@ -37,7 +39,7 @@ vx_Window vx_window_new(vx_WindowDescriptor descriptor) {
     printf("Using opengl %s\n", glGetString(GL_VERSION));
 
     /* Copy the descriptor inside the struct */
-    window.descriptor = descriptor;
+    window.descriptor = *descriptor;
 
     /* make sure that the function pointers are not NULL. If they are NULL we can't call them. */
     window.descriptor.init   = VX_SAFE_FUNC_PTR(window.descriptor.init);
