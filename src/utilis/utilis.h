@@ -6,6 +6,7 @@
 #include "option.h"
 #include "template.h"
 #include "mem.h"
+#include "math.h"
 #include "panic.h"
 #include "default.h"
 #include "file.h"

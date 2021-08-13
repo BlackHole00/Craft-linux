@@ -60,6 +60,10 @@ typedef struct {
     return NULL;                                                                                    \
 }
 
+#define VX_VECTOR_FOREACH(_T, _ELEM_NAME, _VEC, ...) for(u32 I = 0; I < (_VEC)->length; I++) {      \
+        _T _ELEM_NAME = VX_VECTOR_DATA(_T, _VEC)[I]; __VA_ARGS__                                   \
+    }
+
 #define _VX_VECTOR_CREATE_PROT_FOR_TYPE(_T) VX_TEMPLATE_PROT(_T, _VX_VECTOR_PUSH_PT)                \
 VX_TEMPLATE_PROT(_T, _VX_VECTOR_POP_PT)                                                             \
 VX_TEMPLATE_PROT(_T, _VX_VECTOR_TOP_PT)                                                             \

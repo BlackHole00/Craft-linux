@@ -13,7 +13,7 @@ typedef struct {
 
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*) init;
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*, f64) logic;
-    VX_CALLBACK(const vx_UserStatePtr) draw;
+    VX_CALLBACK(vx_UserStatePtr) draw;
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*, u32, u32) resize;
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*) close;
 } vx_WindowDescriptor;

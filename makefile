@@ -12,7 +12,7 @@ OUTPUT    = app
 GLAD_INCLUDE = -I"libs/glad/includes"
 
 INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE)
-LIBS      = -lglfw -lGL -ldl
+LIBS      = -lglfw -lGL -ldl -lm
 
 ifeq ($(PROFILE), 0)
 ARGS      = -std=c99 -g -O0 -D _DEBUG $(LIBS) $(INCLUDES)
@@ -36,10 +36,10 @@ OS_BUILD_DIR     = $(BUILD_DIR)/os
 OS_OBJ			 = $(OS_BUILD_DIR)/window.o
 
 #	GFX
-gfx:	shader.o program.o buffer.o;
+gfx:	base.o shader.o program.o buffer.o layout.o;
 GFX_SRC_DIR		 = $(SRC_DIR)/gfx
 GFX_BUILD_DIR    = $(BUILD_DIR)/gfx
-GFX_OBJ			 = $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o
+GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o
 
 #	GLAD
 glad:	glad.o;
@@ -72,12 +72,16 @@ vector.o:
 	$(CC) -c $(UTILIS_SRC_DIR)/vector.c 	-o $(UTILIS_BUILD_DIR)/vector.o 	$(ARGS)
 window.o:
 	$(CC) -c $(OS_SRC_DIR)/window.c 		-o $(OS_BUILD_DIR)/window.o			$(ARGS)
+base.o:
+	$(CC) -c $(GFX_SRC_DIR)/base/base.c		-o $(GFX_BUILD_DIR)/base/base.o		$(ARGS)
 shader.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/shader.c	-o $(GFX_BUILD_DIR)/base/shader.o	$(ARGS)
 program.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/program.c  -o $(GFX_BUILD_DIR)/base/program.o  $(ARGS)
 buffer.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/buffer.c   -o $(GFX_BUILD_DIR)/base/buffer.o   $(ARGS)
+layout.o:
+	$(CC) -c $(GFX_SRC_DIR)/base/layout.c   -o $(GFX_BUILD_DIR)/base/layout.o   $(ARGS)
 glad.o:
 	$(CC) -c $(GLAD_SRC_DIR)/glad.c			-o $(GLAD_BUILD_DIR)/glad.o			$(ARGS)
 

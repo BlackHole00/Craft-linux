@@ -1,6 +1,6 @@
 #include "shader.h"
 
-vx_GlShader vx_glshader_new(vx_GlShaderDescriptor* descriptor) {
+vx_GlShader vx_glshader_new(const vx_GlShaderDescriptor* descriptor) {
     VX_NULL_ASSERT(descriptor);
     vx_GlShader shader;
 
@@ -27,7 +27,7 @@ vx_GlShader vx_glshader_new(vx_GlShaderDescriptor* descriptor) {
     return shader;
 }
 
-void vx_glshader_free(vx_GlShader* shader) {
+void vx_glshader_free(const vx_GlShader* shader) {
     VX_NULL_ASSERT(shader);
     glDeleteShader(shader->id);
 }

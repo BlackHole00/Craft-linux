@@ -4,7 +4,7 @@
 #include "../../utilis/utilis.h"
 
 typedef enum {
-    VX_GL_VERTEX_BUFFER = GL_VERTEX_ARRAY,
+    VX_GL_VERTEX_BUFFER = GL_ARRAY_BUFFER,
     VX_GL_INDEX_BUFFER  = GL_ELEMENT_ARRAY_BUFFER
 } vx_GlBufferType;
 
@@ -24,8 +24,8 @@ typedef struct {
     GLuint id;
 } vx_GlBuffer;
 
-vx_GlBuffer vx_glbuffer_new(vx_GlBufferDescriptor*);
-void vx_glbuffer_bind(vx_GlBuffer*);
-void vx_glbuffer_data(vx_GlBuffer*, const void*, usize);
-void vx_glbuffer_free(vx_GlBuffer*);
+vx_GlBuffer vx_glbuffer_new(const vx_GlBufferDescriptor*);
+void vx_glbuffer_bind(const vx_GlBuffer*);
+void vx_glbuffer_data(const vx_GlBuffer*, const void*, usize);
+void vx_glbuffer_free(const vx_GlBuffer*);
 #define vx_glbuffer_unbind(_GL_BUFFER_TYPE) glBindBuffer((_GL_BUFFER_TYPE), 0) 

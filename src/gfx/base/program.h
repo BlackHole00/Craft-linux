@@ -16,6 +16,11 @@ typedef struct {
     VX_VECTOR(vx_GlProgramUniformLocationRecord) _uniform_locations;
 } vx_GlProgram;
 
-vx_GlProgram vx_glprogram_new(vx_GlShader*, vx_GlShader*, vx_GlShader*, vx_GlShader*);
-vx_GlProgram vx_glprogram_new_d(vx_GlShader*, vx_GlShader*, vx_GlShader*,vx_GlShader*);
+vx_GlProgram vx_glprogram_new(const vx_GlShader*, const vx_GlShader*, const vx_GlShader*, const vx_GlShader*);
+vx_GlProgram vx_glprogram_new_d(const vx_GlShader*, const vx_GlShader*, const vx_GlShader*,const vx_GlShader*);
 void vx_glprogram_free(vx_GlProgram*);
+
+void vx_glprogram_bind(const vx_GlProgram*);
+void vx_glprogram_unbind();
+
+void vx_glprogram_uniform_f32(vx_GlProgram*, char*, f32);

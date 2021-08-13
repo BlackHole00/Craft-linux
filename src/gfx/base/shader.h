@@ -19,5 +19,5 @@ typedef struct {
     GLuint id;
 } vx_GlShader;
 
-vx_GlShader vx_glshader_new(vx_GlShaderDescriptor*);
-void vx_glshader_free(vx_GlShader*);
+vx_GlShader vx_glshader_new(const vx_GlShaderDescriptor*);
+void vx_glshader_free(const vx_GlShader*);
