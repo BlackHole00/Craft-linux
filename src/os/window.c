@@ -22,8 +22,15 @@ vx_Window vx_window_new(vx_WindowDescriptor* descriptor) {
 
     vx_Window window;
 
-    /* Initialize the library */
+    /* Initialize the library and set glfw hints.   */
     vx_glfw_init();
+    vx_glfw_window_hint(GLFW_CONTEXT_VERSION_MAJOR, descriptor->gl_version.major);
+    vx_glfw_window_hint(GLFW_CONTEXT_VERSION_MINOR, descriptor->gl_version.minor);
+    vx_glfw_window_hint(GLFW_OPENGL_PROFILE,        descriptor->gl_version.profile);
+    vx_glfw_window_hint(GLFW_DECORATED,             descriptor->decorated);
+    vx_glfw_window_hint(GLFW_RESIZABLE,             descriptor->resizable);
+    vx_glfw_window_hint(GLFW_TRANSPARENT_FRAMEBUFFER, descriptor->transparent_framebuffer);
+
 
     /* Create a window */
     window.glfw_window = glfwCreateWindow(descriptor->width, descriptor->height, descriptor->title, descriptor->fullscreen ? glfwGetPrimaryMonitor(): NULL, NULL);

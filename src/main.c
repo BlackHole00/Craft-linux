@@ -80,14 +80,9 @@ int main(void)
 {
     freopen("log.txt", "w", stdout);
 
-    vx_glfw_init();
-    vx_glfw_window_hint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    vx_glfw_window_hint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    vx_glfw_window_hint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    vx_glfw_window_hint(GLFW_TRANSPARENT_FRAMEBUFFER, 1);
-
     vx_WindowDescriptor descriptor = VX_DEFAULT(vx_WindowDescriptor);
     descriptor.title    = "OpenGL";
+    descriptor.transparent_framebuffer = true;
     descriptor.init     = (vx_Callback)gm_init;
     descriptor.logic    = (vx_Callback)gm_logic;
     descriptor.draw     = (vx_Callback)gm_draw;

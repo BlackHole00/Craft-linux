@@ -2,8 +2,8 @@
 #include "template.h"
 #include "types.h"
 
-#define VX_CREATE_DEFAULT(_TYPE, ...) static const _TYPE VX_TEMPLATE_NAME(_TYPE, default) = (_TYPE){ __VA_ARGS__ };
-#define VX_DEFAULT(_TYPE) VX_TEMPLATE_NAME(_TYPE, default)
+#define VX_CREATE_DEFAULT(_TYPE, ...) static _TYPE VX_TEMPLATE_NAME(_TYPE, default)(void) { return (_TYPE){ __VA_ARGS__ }; }
+#define VX_DEFAULT(_TYPE) VX_TEMPLATE_NAME(_TYPE, default)()
 
 VX_CREATE_DEFAULT(u8,  0)
 VX_CREATE_DEFAULT(u16, 0)

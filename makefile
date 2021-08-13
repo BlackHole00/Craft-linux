@@ -15,9 +15,9 @@ INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE)
 LIBS      = -lglfw -lGL -ldl -lm
 
 ifeq ($(PROFILE), 0)
-ARGS      = -std=c99 -g -O0 -D _DEBUG $(LIBS) $(INCLUDES)
+ARGS      = -std=c17 -g -O0 -D _DEBUG $(LIBS) $(INCLUDES)
 else
-ARGS	  = -std=c99 -O3 -D _RELEASE $(LIBS) $(INCLUDES)
+ARGS	  = -std=c17 -O3 -D _RELEASE $(LIBS) $(INCLUDES)
 endif
 
 _: all
