@@ -22,6 +22,7 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .type = VX_GL_FRAGMENT_SHADER,
         .shader_path = "res/shaders/basic.fs"
     });
+    VX_GL_CHECK_ERRORS()
 
     state->program = vx_glprogram_new_d(
         &vertex_shader,
@@ -29,6 +30,7 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         NULL,
         NULL
     );
+    VX_GL_CHECK_ERRORS()
 
     f32 data[] = {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -43,6 +45,7 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .data = data,
         .data_size = sizeof(data)
     });
+    VX_GL_CHECK_ERRORS()
     
     u32 indices[] = {
         0, 1, 2,
@@ -55,21 +58,18 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .data = indices,
         .data_size = sizeof(indices)
     });
+    VX_GL_CHECK_ERRORS()
 
-    vx_GlTextureData tdata;
-    tdata.data = stbi_load("res/textures/container.jpg", &tdata.width, &tdata.height, NULL, 0);
-    tdata.encoding_type = VX_GL_BYTE;
-    tdata.format = VX_GL_RGB;
-    state->texture = vx_gltexture_new(&(vx_GlTextureDescriptor){
+    state->texture = vx_gltexture_from_path(&(vx_GlTextureDescriptor){
         .type = VX_GL_TEXTURE_2D,
         .format = VX_GL_RGB,
-        .mag_filter = VX_GL_NEAREST,
+        .mag_filter = VX_GL_LINEAR,
         .min_filter = VX_GL_NEAREST,
         .texture_unit = 0,
         .warp_s = VX_GL_CLAMP_TO_BORDER,
         .warp_t = VX_GL_CLAMP_TO_BORDER
-    }, &tdata);
-    stbi_image_free(tdata.data);
+    }, "res/textures/container.jpg");
+    VX_GL_CHECK_ERRORS()
 
     state->layout = vx_gllayout_new(&(vx_GlLayoutDescriptor){
         .element_number = 2,
@@ -78,6 +78,7 @@ void gm_init(gm_State* state, GLFWwindow* window) {
             { .count = 2, .type = VX_GL_F32, .normalized = false }
         }
     });
+    VX_GL_CHECK_ERRORS()
 }
 
 void gm_logic(gm_State* state, GLFWwindow* window, f64 delta) {
@@ -97,6 +98,8 @@ void gm_draw(gm_State* state) {
     vx_gltexture_bind(&state->texture);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+    VX_GL_CHECK_ERRORS()
 }
 
 void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {

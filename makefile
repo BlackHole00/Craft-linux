@@ -37,10 +37,10 @@ OS_BUILD_DIR     = $(BUILD_DIR)/os
 OS_OBJ			 = $(OS_BUILD_DIR)/window.o
 
 #	GFX
-gfx:	base.o shader.o program.o buffer.o layout.o texture.o;
+gfx:	base.o gl_error.o shader.o program.o buffer.o layout.o texture.o;
 GFX_SRC_DIR		 = $(SRC_DIR)/gfx
 GFX_BUILD_DIR    = $(BUILD_DIR)/gfx
-GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o $(GFX_BUILD_DIR)/base/texture.o
+GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/gl_error.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o $(GFX_BUILD_DIR)/base/texture.o
 
 #	GLAD
 glad:	glad.o;
@@ -81,6 +81,8 @@ window.o:
 	$(CC) -c $(OS_SRC_DIR)/window.c 		-o $(OS_BUILD_DIR)/window.o			$(ARGS)
 base.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/base.c		-o $(GFX_BUILD_DIR)/base/base.o		$(ARGS)
+gl_error.o:
+	$(CC) -c $(GFX_SRC_DIR)/base/gl_error.c	-o $(GFX_BUILD_DIR)/base/gl_error.o	$(ARGS)
 shader.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/shader.c	-o $(GFX_BUILD_DIR)/base/shader.o	$(ARGS)
 program.o:

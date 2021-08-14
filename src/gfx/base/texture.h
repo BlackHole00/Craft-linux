@@ -25,8 +25,8 @@ typedef enum {
 } vx_GlTextureWarp;
 
 typedef enum {
-    VX_GL_NEAREST           = GL_NEAREST,
-    VX_GL_LINEAR            = GL_LINEAR,
+    VX_GL_NEAREST                   = GL_NEAREST,
+    VX_GL_LINEAR                    = GL_LINEAR,
     VX_GL_NEAREST_MIPMAP_NEAREST    = GL_NEAREST_MIPMAP_NEAREST,
     VX_GL_LINEAR_MIPMAP_NEAREST     = GL_LINEAR_MIPMAP_NEAREST,
     VX_GL_NEAREST_MIPMAP_LINEAR     = GL_NEAREST_MIPMAP_LINEAR,
@@ -65,6 +65,8 @@ typedef struct {
 } vx_GlTexture;
 
 vx_GlTexture vx_gltexture_new(const vx_GlTextureDescriptor*, const vx_GlTextureData*);
+vx_GlTexture vx_gltexture_from_path(const vx_GlTextureDescriptor*, const char*);
 void vx_gltexture_bind(const vx_GlTexture*);
 void vx_gltexture_data(const vx_GlTexture*, const vx_GlTextureData*);
+void vx_gltexture_data_from_path(const vx_GlTexture*, const char*);
 void vx_gltexture_free(const vx_GlTexture*);
