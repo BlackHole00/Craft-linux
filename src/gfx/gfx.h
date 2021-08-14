@@ -5,3 +5,4 @@
 #include "base/program.h"
 #include "base/buffer.h"
 #include "base/layout.h"
+#include "base/texture.h"

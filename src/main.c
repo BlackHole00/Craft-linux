@@ -3,11 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <stb_image.h>
 
 typedef struct {
     vx_GlProgram program;
-    vx_GlBuffer  buffer;
+    vx_GlBuffer  vbuffer;
+    vx_GlBuffer  ibuffer;
     vx_GlLayout  layout;
+    vx_GlTexture texture;
 } gm_State;
 
 void gm_init(gm_State* state, GLFWwindow* window) {
@@ -26,26 +29,53 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         NULL,
         NULL
     );
-    vx_glprogram_uniform_f32(&state->program, "uAlpha", 1.0);
 
-    float data[] = {
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-         0.0f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-         0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+    f32 data[] = {
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
     };
-    state->buffer = vx_glbuffer_new(&(vx_GlBufferDescriptor){
+    state->vbuffer = vx_glbuffer_new(&(vx_GlBufferDescriptor){
         .type = VX_GL_VERTEX_BUFFER,
         .usage = VX_GL_STATIC_DRAW
     }, &(vx_GlBufferData){
         .data = data,
         .data_size = sizeof(data)
     });
+    
+    u32 indices[] = {
+        0, 1, 2,
+        0, 2, 3
+    };
+    state->ibuffer = vx_glbuffer_new(&(vx_GlBufferDescriptor){
+        .type = VX_GL_INDEX_BUFFER,
+        .usage = VX_GL_STATIC_DRAW
+    }, &(vx_GlBufferData){
+        .data = indices,
+        .data_size = sizeof(indices)
+    });
+
+    vx_GlTextureData tdata;
+    tdata.data = stbi_load("res/textures/container.jpg", &tdata.width, &tdata.height, NULL, 0);
+    tdata.encoding_type = VX_GL_BYTE;
+    tdata.format = VX_GL_RGB;
+    state->texture = vx_gltexture_new(&(vx_GlTextureDescriptor){
+        .type = VX_GL_TEXTURE_2D,
+        .format = VX_GL_RGB,
+        .mag_filter = VX_GL_NEAREST,
+        .min_filter = VX_GL_NEAREST,
+        .texture_unit = 0,
+        .warp_s = VX_GL_CLAMP_TO_BORDER,
+        .warp_t = VX_GL_CLAMP_TO_BORDER
+    }, &tdata);
+    stbi_image_free(tdata.data);
 
     state->layout = vx_gllayout_new(&(vx_GlLayoutDescriptor){
         .element_number = 2,
         .elements = (vx_GlLayoutElement[]){
             { .count = 3, .type = VX_GL_F32, .normalized = false },
-            { .count = 3, .type = VX_GL_F32, .normalized = false }
+            { .count = 2, .type = VX_GL_F32, .normalized = false }
         }
     });
 }
@@ -61,12 +91,12 @@ void gm_draw(gm_State* state) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     vx_glprogram_bind(&state->program);
-    vx_glbuffer_bind(&state->buffer);
+    vx_glbuffer_bind(&state->vbuffer);
+    vx_glbuffer_bind(&state->ibuffer);
     vx_gllayout_bind(&state->layout);
+    vx_gltexture_bind(&state->texture);
 
-    vx_glprogram_uniform_f32(&state->program, "uAlpha", (f32)sin(glfwGetTime()));
-
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 }
 
 void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {
@@ -75,8 +105,10 @@ void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {
 
 void gm_close(gm_State* state, GLFWwindow* window) {
     vx_glprogram_free(&state->program);
-    vx_glbuffer_free(&state->buffer);
+    vx_glbuffer_free(&state->vbuffer);
+    vx_glbuffer_free(&state->ibuffer);
     vx_gllayout_free(&state->layout);
+    vx_gltexture_free(&state->texture);
 }
 
 int main(void)

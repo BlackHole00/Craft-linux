@@ -10,8 +10,9 @@ RES_DIR   = res
 OUTPUT    = app
 
 GLAD_INCLUDE = -I"libs/glad/includes"
+STB_INCLUDE  = -I"libs/stb/includes"
 
-INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE)
+INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE) $(STB_INCLUDE)
 LIBS      = -lglfw -lGL -ldl -lm
 
 ifeq ($(PROFILE), 0)
@@ -36,16 +37,22 @@ OS_BUILD_DIR     = $(BUILD_DIR)/os
 OS_OBJ			 = $(OS_BUILD_DIR)/window.o
 
 #	GFX
-gfx:	base.o shader.o program.o buffer.o layout.o;
+gfx:	base.o shader.o program.o buffer.o layout.o texture.o;
 GFX_SRC_DIR		 = $(SRC_DIR)/gfx
 GFX_BUILD_DIR    = $(BUILD_DIR)/gfx
-GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o
+GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o $(GFX_BUILD_DIR)/base/texture.o
 
 #	GLAD
 glad:	glad.o;
 GLAD_SRC_DIR	 = libs/glad/src
 GLAD_BUILD_DIR   = $(BUILD_DIR)/libs
 GLAD_OBJ		 = $(GLAD_BUILD_DIR)/glad.o
+
+#	STB
+stb:	stb_impl.o;
+STB_SRC_DIR		 = libs/stb/src
+STB_BUILD_DIR	 = $(BUILD_DIR)/libs
+STB_OBJ			 = $(STB_BUILD_DIR)/stb_impl.o
 
 #	MAIN
 main: 	main.o;
@@ -82,11 +89,15 @@ buffer.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/buffer.c   -o $(GFX_BUILD_DIR)/base/buffer.o   $(ARGS)
 layout.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/layout.c   -o $(GFX_BUILD_DIR)/base/layout.o   $(ARGS)
+texture.o:
+	$(CC) -c $(GFX_SRC_DIR)/base/texture.c  -o $(GFX_BUILD_DIR)/base/texture.o  $(ARGS)
 glad.o:
 	$(CC) -c $(GLAD_SRC_DIR)/glad.c			-o $(GLAD_BUILD_DIR)/glad.o			$(ARGS)
+stb_impl.o:
+	$(CC) -c $(STB_SRC_DIR)/stb_impl.c		-o $(STB_BUILD_DIR)/stb_impl.o		$(ARGS)
 
 #####  TASKS  #####
-OBJS = $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
+OBJS = $(STB_OBJ) $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
 
 all: clean build_prepare build;
 
@@ -98,7 +109,7 @@ build_prepare:
 	rm -rf $(BUILD_DIR)/$(RES_DIR)
 	cp -r $(RES_DIR) $(BUILD_DIR)/$(RES_DIR)
 
-build: glad utilis os gfx main
+build: stb glad utilis os gfx main
 	$(CC) $(OBJS) -o $(BUILD_DIR)/$(OUTPUT) $(ARGS)
 
 run: all
