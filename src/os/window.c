@@ -1,19 +1,38 @@
 #include "window.h"
 #include <stdio.h>
 
-static bool is_glfw_initialized = false;
+static bool _is_glfw_initialized = false;
+static struct {
+    bool resized;
+    u32 width;
+    u32 height;
+} _resize_data;
+static void _internal_glfw_resize(GLFWwindow* window, i32 width, i32 height) {
+    _resize_data.resized = true;
+    _resize_data.width   = (u32)width;
+    _resize_data.height  = (u32)height;
+}
+static void _check_resize(vx_Window* window) {
+    if (_resize_data.resized) {
+        window->descriptor.resize(window->user_state, window->glfw_window, _resize_data.width, _resize_data.height);
+    }
+}
 
 void vx_glfw_init() {
-    if (!is_glfw_initialized) {
+    if (!_is_glfw_initialized) {
         VX_ASSERT("Could not initialize glfw!", glfwInit());
-        is_glfw_initialized = true;
+        _resize_data.resized = false;
+        _resize_data.width   = 0;
+        _resize_data.height  = 0;
+
+        _is_glfw_initialized = true;
     }
 }
 
 void vx_glfw_terminate() {
-    if (is_glfw_initialized) {
+    if (_is_glfw_initialized) {
         glfwTerminate();
-        is_glfw_initialized = false;
+        _is_glfw_initialized = false;
     }
 }
 
@@ -37,6 +56,9 @@ vx_Window vx_window_new(vx_WindowDescriptor* descriptor) {
 
     /* Crash if the window is NULL */
     VX_ASSERT_EXIT_OP("Could not open glfw window!", window.glfw_window, vx_glfw_terminate());
+
+    /*  Set window callbacks    */
+    glfwSetWindowSizeCallback(window.glfw_window, _internal_glfw_resize);
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window.glfw_window);
@@ -65,6 +87,8 @@ void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
     self->descriptor.init(self->user_state, self->glfw_window);
 
     while (!glfwWindowShouldClose(self->glfw_window)) {
+        _check_resize(self);
+
         self->descriptor.logic(self->user_state, self->glfw_window, 0.0f);
         self->descriptor.draw(self->user_state);
 

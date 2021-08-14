@@ -69,7 +69,9 @@ void gm_draw(gm_State* state) {
     glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
-void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {}
+void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {
+    glViewport(0, 0, width, height);
+}
 
 void gm_close(gm_State* state, GLFWwindow* window) {
     vx_glprogram_free(&state->program);
@@ -84,6 +86,7 @@ int main(void)
     vx_WindowDescriptor descriptor = VX_DEFAULT(vx_WindowDescriptor);
     descriptor.title    = "OpenGL";
     descriptor.transparent_framebuffer = true;
+    descriptor.resizable = true;
     descriptor.init     = (vx_Callback)gm_init;
     descriptor.logic    = (vx_Callback)gm_logic;
     descriptor.draw     = (vx_Callback)gm_draw;
