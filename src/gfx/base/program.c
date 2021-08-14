@@ -1,6 +1,8 @@
 #include "program.h"
 #include <string.h>
 
+#include "gl_error.h"
+
 static GLuint get_uniform_location(vx_GlProgram* program, char* uniform_name) {
     VX_NULL_ASSERT(program);
     VX_NULL_ASSERT(uniform_name);
@@ -42,6 +44,8 @@ vx_GlProgram vx_glprogram_new(const vx_GlShader* vertex_shader, const vx_GlShade
     if (compute_shader  != NULL) { glAttachShader(program.id, compute_shader->id);  }
     glLinkProgram(program.id);
 
+    VX_GL_CHECK_ERRORS()
+
     return program;
 }
 
@@ -60,6 +64,7 @@ vx_GlProgram vx_glprogram_new_d(const vx_GlShader* vertex_shader, const vx_GlSha
 void vx_glprogram_free(vx_GlProgram* program) {
     VX_NULL_ASSERT(program);
     glDeleteProgram(program->id);
+    VX_GL_CHECK_ERRORS()
 
     vx_vector_free(&program->_uniform_locations);
 }
@@ -67,6 +72,7 @@ void vx_glprogram_free(vx_GlProgram* program) {
 void vx_glprogram_bind(const vx_GlProgram* program) {
     VX_NULL_ASSERT(program);
     glUseProgram(program->id);
+    VX_GL_CHECK_ERRORS()
 }
 
 void vx_glprogram_unbind() {
@@ -78,6 +84,7 @@ void VX_TEMPLATE_NAME(f32, vx_glprogram_uniform)(vx_GlProgram* program, char* un
 
     vx_glprogram_bind(program);
     glUniform1f(get_uniform_location(program, uniform_name), value);
+    VX_GL_CHECK_ERRORS()
 }
 
 _VX_OPTION_CREATE_BODY_FOR_TYPE(vx_GlProgramUniformLocationRecord)

@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <float16.h>
 
 typedef uint8_t byte;
 typedef uint8_t u8;
@@ -14,6 +15,7 @@ typedef int16_t i16;
 typedef int32_t i32;
 typedef int64_t i64;
 
+typedef float16 f16;
 typedef float f32;
 typedef double f64;
 
@@ -24,3 +26,5 @@ typedef ssize_t isize;
 #endif
 
 typedef char* rawstr;
+
+#define f16_from_i32(_INT) f16_from_int(_INT)

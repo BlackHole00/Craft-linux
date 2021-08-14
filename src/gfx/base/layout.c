@@ -1,5 +1,7 @@
 #include "layout.h"
 
+#include "gl_error.h"
+
 static void apply_layout(const vx_GlLayout* layout, const vx_GlLayoutDescriptor* descriptor) {
     VX_NULL_ASSERT(layout);
     VX_NULL_ASSERT(descriptor);
@@ -20,6 +22,8 @@ static void apply_layout(const vx_GlLayout* layout, const vx_GlLayoutDescriptor*
         glVertexAttribPointer(index, descriptor->elements[i - 1].count, descriptor->elements[i - 1].type, descriptor->elements[i - 1].normalized, stride, (const void*)offset);
         glEnableVertexAttribArray(index);
     }
+
+    VX_GL_CHECK_ERRORS()
 }
 
 vx_GlLayout vx_gllayout_new(const vx_GlLayoutDescriptor* descriptor) {
@@ -31,12 +35,15 @@ vx_GlLayout vx_gllayout_new(const vx_GlLayoutDescriptor* descriptor) {
 
     apply_layout(&layout, descriptor);
 
+    VX_GL_CHECK_ERRORS()
+
     return layout;
 }
 
 void vx_gllayout_bind(const vx_GlLayout* layout) {
     VX_NULL_ASSERT(layout);
     glBindVertexArray(layout->id);
+    VX_GL_CHECK_ERRORS()
 }
 
 void vx_gllayout_unbind() {
@@ -46,4 +53,5 @@ void vx_gllayout_unbind() {
 void vx_gllayout_free(const vx_GlLayout* layout) {
     VX_NULL_ASSERT(layout);
     glDeleteVertexArrays(1, &layout->id);
+    VX_GL_CHECK_ERRORS()
 }

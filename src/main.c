@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include <stb_image.h>
+#include <HandmadeMath.h>
 
 typedef struct {
     vx_GlProgram program;
@@ -30,7 +31,6 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         NULL,
         NULL
     );
-    VX_GL_CHECK_ERRORS()
 
     f32 data[] = {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -45,7 +45,6 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .data = data,
         .data_size = sizeof(data)
     });
-    VX_GL_CHECK_ERRORS()
     
     u32 indices[] = {
         0, 1, 2,
@@ -58,7 +57,6 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .data = indices,
         .data_size = sizeof(indices)
     });
-    VX_GL_CHECK_ERRORS()
 
     state->texture = vx_gltexture_from_path(&(vx_GlTextureDescriptor){
         .type = VX_GL_TEXTURE_2D,
@@ -69,7 +67,6 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .warp_s = VX_GL_CLAMP_TO_BORDER,
         .warp_t = VX_GL_CLAMP_TO_BORDER
     }, "res/textures/container.jpg");
-    VX_GL_CHECK_ERRORS()
 
     state->layout = vx_gllayout_new(&(vx_GlLayoutDescriptor){
         .element_number = 2,
@@ -78,7 +75,6 @@ void gm_init(gm_State* state, GLFWwindow* window) {
             { .count = 2, .type = VX_GL_F32, .normalized = false }
         }
     });
-    VX_GL_CHECK_ERRORS()
 }
 
 void gm_logic(gm_State* state, GLFWwindow* window, f64 delta) {

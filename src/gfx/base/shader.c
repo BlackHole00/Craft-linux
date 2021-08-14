@@ -1,4 +1,5 @@
 #include "shader.h"
+#include "gl_error.h"
 
 vx_GlShader vx_glshader_new(const vx_GlShaderDescriptor* descriptor) {
     VX_NULL_ASSERT(descriptor);
@@ -24,10 +25,13 @@ vx_GlShader vx_glshader_new(const vx_GlShaderDescriptor* descriptor) {
         }
     }
 
+    VX_GL_CHECK_ERRORS()
+
     return shader;
 }
 
 void vx_glshader_free(const vx_GlShader* shader) {
     VX_NULL_ASSERT(shader);
     glDeleteShader(shader->id);
+    VX_GL_CHECK_ERRORS()
 }

@@ -11,8 +11,10 @@ OUTPUT    = app
 
 GLAD_INCLUDE = -I"libs/glad/includes"
 STB_INCLUDE  = -I"libs/stb/includes"
+FLOAT16_INCLUDE = -I"libs/float16/includes"
+HMM_INCLUDE	 = -I"libs/handmade_math/includes"
 
-INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE) $(STB_INCLUDE)
+INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE) $(STB_INCLUDE) $(FLOAT16_INCLUDE) $(HMM_INCLUDE)
 LIBS      = -lglfw -lGL -ldl -lm
 
 ifeq ($(PROFILE), 0)
@@ -53,6 +55,18 @@ stb:	stb_impl.o;
 STB_SRC_DIR		 = libs/stb/src
 STB_BUILD_DIR	 = $(BUILD_DIR)/libs
 STB_OBJ			 = $(STB_BUILD_DIR)/stb_impl.o
+
+#	FLOAT16
+float16: float16.o;
+FLOAT16_SRC_DIR	 = libs/float16/src
+FLOAT16_BUILD_DIR	= $(BUILD_DIR)/libs
+FLOAT16_OBJ		 = $(FLOAT16_BUILD_DIR)/float16.o
+
+#	HANDMADEMATH (HMM)
+hmm: hmm.o;
+HMM_SRC_DIR		 = libs/handmade_math/src
+HMM_BUILD_DIR	 = $(BUILD_DIR)/libs
+HMM_OBJ		 	 = $(HMM_BUILD_DIR)/hmm.o
 
 #	MAIN
 main: 	main.o;
@@ -97,9 +111,13 @@ glad.o:
 	$(CC) -c $(GLAD_SRC_DIR)/glad.c			-o $(GLAD_BUILD_DIR)/glad.o			$(ARGS)
 stb_impl.o:
 	$(CC) -c $(STB_SRC_DIR)/stb_impl.c		-o $(STB_BUILD_DIR)/stb_impl.o		$(ARGS)
+float16.o:
+	$(CC) -c $(FLOAT16_SRC_DIR)/float16.c	-o $(FLOAT16_BUILD_DIR)/float16.o	$(ARGS)
+hmm.o:
+	$(CC) -c $(HMM_SRC_DIR)/handmade_math.c	-o $(HMM_BUILD_DIR)/hmm.o			$(ARGS)
 
 #####  TASKS  #####
-OBJS = $(STB_OBJ) $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
+OBJS = $(HMM_OBJ) $(FLOAT16_OBJ) $(STB_OBJ) $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
 
 all: clean build_prepare build;
 
@@ -111,7 +129,7 @@ build_prepare:
 	rm -rf $(BUILD_DIR)/$(RES_DIR)
 	cp -r $(RES_DIR) $(BUILD_DIR)/$(RES_DIR)
 
-build: stb glad utilis os gfx main
+build: hmm float16 stb glad utilis os gfx main
 	$(CC) $(OBJS) -o $(BUILD_DIR)/$(OUTPUT) $(ARGS)
 
 run: all
