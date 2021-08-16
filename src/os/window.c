@@ -86,7 +86,7 @@ void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
 
     self->descriptor.init(self->user_state, self->glfw_window);
 
-    while (!glfwWindowShouldClose(self->glfw_window)) {
+    /*while (!glfwWindowShouldClose(self->glfw_window)) {
         _check_resize(self);
 
         self->descriptor.logic(self->user_state, self->glfw_window, 0.0f);
@@ -94,9 +94,10 @@ void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
 
         glfwSwapBuffers(self->glfw_window);
         glfwPollEvents();
-    }
+    }*/
 
     self->descriptor.close(self->user_state, self->glfw_window);
+    glfwDestroyWindow(self->glfw_window);
 
     vx_glfw_terminate();
 }

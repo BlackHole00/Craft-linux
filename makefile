@@ -1,5 +1,8 @@
 ######  GENERAL  #####
 CC 		  = gcc
+CPPCHECK  = cppcheck
+#	valgrind note: still reachable data should not be not bad...
+VALGRIND  = valdgrind
 
 #	0 = debug, 1 = release
 PROFILE	  = 0
@@ -138,3 +141,15 @@ build: hmm float16 stb glad utilis os gfx main
 
 run: all
 	./$(BUILD_DIR)/$(OUTPUT)
+
+analyze: all
+	(valgrind --leak-check=full --show-leak-kinds=all -s ./$(BUILD_DIR)/$(OUTPUT)) &> ./result.txt
+	cat ./result.txt
+
+static_analyze:
+ifeq ($(PROFILE), 0)
+	$(CPPCHECK) -D_DEBUG -v --bug-hunting --output-file=result.txt -q  .
+else
+	$(CPPCHECK) -D_RELEASE -v --bug-hunting --output-file=result.txt -q .
+endif
+	cat ./result.txt

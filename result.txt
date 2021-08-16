@@ -1,0 +1,33 @@
+src/gfx/base/sprogram.c:91:1: error: Cannot determine that 'value.uniform_name' is initialized [bughuntingUninitStructMember]
+_VX_OPTION_CREATE_BODY_FOR_TYPE(vx_GlProgramUniformLocationRecord)
+^
+src/utilis/tostring.c:6:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(u8,   sprintf (_vx_tostring_buffer, "%u", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:7:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(u16,  sprintf (_vx_tostring_buffer, "%u", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:8:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(u32,  sprintf (_vx_tostring_buffer, "%u", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:9:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(u64,  sprintf (_vx_tostring_buffer, "%u", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:10:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(i8,   sprintf (_vx_tostring_buffer, "%d", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:11:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(i16,  sprintf (_vx_tostring_buffer, "%d", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:12:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(i32,  sprintf (_vx_tostring_buffer, "%d", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:13:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(i64,  sprintf (_vx_tostring_buffer, "%d", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:14:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(f32,  sprintf (_vx_tostring_buffer, "%f", obj);   return _vx_tostring_buffer;)
+^
+src/utilis/tostring.c:15:1: error: Buffer read/write, when calling 'sprintf' it cannot be determined that 1st argument is not overflowed [bughuntingBufferOverflow]
+_VX_TOSTRING_CREATE_BODY_FOR_TYPE(f64,  sprintf (_vx_tostring_buffer, "%lf", obj);  return _vx_tostring_buffer;)
+^

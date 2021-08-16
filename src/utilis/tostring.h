@@ -1,5 +1,7 @@
 #pragma once
 
+/*  Eh, I don't know if you should use it... I don't like the buffering...  */
+
 #include "template.h"
 #include "types.h"
 #define _VX_TOSTRING_BUFFER_SIZE 1024
