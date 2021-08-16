@@ -10,3 +10,4 @@
 #include "panic.h"
 #include "default.h"
 #include "file.h"
+#include "tostring.h"

@@ -27,10 +27,10 @@ _: all
 
 #####  MODULES  #####
 #	UTILIS
-utilis: file.o functions.o math.o mem.o option.o panic.o vector.o;
+utilis: file.o functions.o math.o mem.o option.o panic.o vector.o tostring.o;
 UTILIS_SRC_DIR   = $(SRC_DIR)/utilis
 UTILIS_BUILD_DIR = $(BUILD_DIR)/utilis
-UTILIS_OBJ       = $(UTILIS_BUILD_DIR)/file.o $(UTILIS_BUILD_DIR)/functions.o $(UTILIS_BUILD_DIR)/math.o $(UTILIS_BUILD_DIR)/mem.o $(UTILIS_BUILD_DIR)/option.o $(UTILIS_BUILD_DIR)/panic.o $(UTILIS_BUILD_DIR)/vector.o
+UTILIS_OBJ       = $(UTILIS_BUILD_DIR)/file.o $(UTILIS_BUILD_DIR)/functions.o $(UTILIS_BUILD_DIR)/math.o $(UTILIS_BUILD_DIR)/mem.o $(UTILIS_BUILD_DIR)/option.o $(UTILIS_BUILD_DIR)/panic.o $(UTILIS_BUILD_DIR)/vector.o $(UTILIS_BUILD_DIR)/tostring.o
 
 #	OS
 os:		window.o;
@@ -39,10 +39,10 @@ OS_BUILD_DIR     = $(BUILD_DIR)/os
 OS_OBJ			 = $(OS_BUILD_DIR)/window.o
 
 #	GFX
-gfx:	base.o gl_error.o shader.o program.o buffer.o layout.o texture.o;
+gfx:	base.o gl_error.o shader.o program.o buffer.o layout.o texture.o sprogram.o;
 GFX_SRC_DIR		 = $(SRC_DIR)/gfx
 GFX_BUILD_DIR    = $(BUILD_DIR)/gfx
-GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/gl_error.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o $(GFX_BUILD_DIR)/base/texture.o
+GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/gl_error.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o $(GFX_BUILD_DIR)/base/texture.o $(GFX_BUILD_DIR)/base/sprogram.o
 
 #	GLAD
 glad:	glad.o;
@@ -91,6 +91,8 @@ panic.o:
 	$(CC) -c $(UTILIS_SRC_DIR)/panic.c 		-o $(UTILIS_BUILD_DIR)/panic.o 		$(ARGS)
 vector.o:
 	$(CC) -c $(UTILIS_SRC_DIR)/vector.c 	-o $(UTILIS_BUILD_DIR)/vector.o 	$(ARGS)
+tostring.o:
+	$(CC) -c $(UTILIS_SRC_DIR)/tostring.c 	-o $(UTILIS_BUILD_DIR)/tostring.o 	$(ARGS)
 window.o:
 	$(CC) -c $(OS_SRC_DIR)/window.c 		-o $(OS_BUILD_DIR)/window.o			$(ARGS)
 base.o:
@@ -107,6 +109,8 @@ layout.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/layout.c   -o $(GFX_BUILD_DIR)/base/layout.o   $(ARGS)
 texture.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/texture.c  -o $(GFX_BUILD_DIR)/base/texture.o  $(ARGS)
+sprogram.o:
+	$(CC) -c $(GFX_SRC_DIR)/base/sprogram.c -o $(GFX_BUILD_DIR)/base/sprogram.o $(ARGS)
 glad.o:
 	$(CC) -c $(GLAD_SRC_DIR)/glad.c			-o $(GLAD_BUILD_DIR)/glad.o			$(ARGS)
 stb_impl.o:
@@ -134,4 +138,3 @@ build: hmm float16 stb glad utilis os gfx main
 
 run: all
 	./$(BUILD_DIR)/$(OUTPUT)
-	cat log.txt

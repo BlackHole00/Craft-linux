@@ -1,0 +1,2 @@
+Using opengl 4.6 (Core Profile) Mesa 21.1.6
+GL_INVALID_OPERATION error in function apply_layout(src/gfx/base/layout.c::26)

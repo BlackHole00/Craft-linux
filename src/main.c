@@ -1,4 +1,5 @@
 #include "gfx/gfx.h"
+#include "utilis/utilis.h"
 #include "os/os.h"
 #include <stdio.h>
 #include <string.h>
@@ -7,6 +8,7 @@
 #include <HandmadeMath.h>
 
 typedef struct {
+    vx_GlSimpleProgram sprogram;
     vx_GlProgram program;
     vx_GlBuffer  vbuffer;
     vx_GlBuffer  ibuffer;
@@ -25,12 +27,12 @@ void gm_init(gm_State* state, GLFWwindow* window) {
     });
     VX_GL_CHECK_ERRORS()
 
-    state->program = vx_glprogram_new_d(
-        &vertex_shader,
-        &fragment_shader,
-        NULL,
-        NULL
-    );
+    state->sprogram = vx_glsimpleprogram_new(&(vx_GlSimpleProgramDescriptor){
+        .vertex_shader      = &vertex_shader,
+        .fragment_shader    = &fragment_shader,
+        .geometry_shader    = NULL,
+        .compute_shader     = NULL,
+    });
 
     f32 data[] = {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -68,6 +70,26 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .warp_t = VX_GL_CLAMP_TO_BORDER
     }, "res/textures/container.jpg");
 
+    state->program = vx_glprogram_new_d(&(vx_GlProgramDescriptor){
+        .vertex_shader      = &vertex_shader,
+        .fragment_shader    = &fragment_shader,
+        .geometry_shader    = NULL,
+        .compute_shader     = NULL,
+        .states             = &(vx_GlProgramStates){
+            .depth_test           = VX_GL_LEQUAL,
+            .culling.culling_face = VX_GL_BACK,
+            .culling.front_face   = VX_GL_CCW,
+            .blending.enabled     = false,
+        },
+        .layout             = &(vx_GlLayoutDescriptor){
+            .element_number = 2,
+            .elements = (vx_GlLayoutElement[]){
+                { .count = 3, .type = VX_GL_F32, .normalized = false },
+                { .count = 2, .type = VX_GL_F32, .normalized = false }
+            }
+        }
+    });
+
     state->layout = vx_gllayout_new(&(vx_GlLayoutDescriptor){
         .element_number = 2,
         .elements = (vx_GlLayoutElement[]){
@@ -87,7 +109,7 @@ void gm_draw(gm_State* state) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    vx_glprogram_bind(&state->program);
+    vx_glsimpleprogram_bind(&state->sprogram);
     vx_glbuffer_bind(&state->vbuffer);
     vx_glbuffer_bind(&state->ibuffer);
     vx_gllayout_bind(&state->layout);
@@ -103,6 +125,7 @@ void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {
 }
 
 void gm_close(gm_State* state, GLFWwindow* window) {
+    vx_glsimpleprogram_free(&state->sprogram);
     vx_glprogram_free(&state->program);
     vx_glbuffer_free(&state->vbuffer);
     vx_glbuffer_free(&state->ibuffer);
@@ -112,7 +135,9 @@ void gm_close(gm_State* state, GLFWwindow* window) {
 
 int main(void)
 {
+#ifdef _RELEASE
     freopen("log.txt", "w", stdout);
+#endif
 
     vx_WindowDescriptor descriptor = VX_DEFAULT(vx_WindowDescriptor);
     descriptor.title    = "OpenGL";

@@ -14,15 +14,13 @@ vx_GlShader vx_glshader_new(const vx_GlShaderDescriptor* descriptor) {
 
     free(shader_source);
 
-    {
-        i32 success;
-        char info_log[1024];
-        glGetShaderiv(shader.id, GL_COMPILE_STATUS, &success);
+    i32 success;
+    glGetShaderiv(shader.id, GL_COMPILE_STATUS, &success);
 
-        if (!success) {
-            glGetShaderInfoLog(shader.id, 1024, NULL, info_log);
-            printf("Could not compile shader %s:\n%s\n", descriptor->shader_path, info_log);
-        }
+    if (!success) {
+        char info_log[1024];
+        glGetShaderInfoLog(shader.id, 1024, NULL, info_log);
+        printf("Could not compile shader %s:\n%s\n", descriptor->shader_path, info_log);
     }
 
     VX_GL_CHECK_ERRORS()
