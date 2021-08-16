@@ -86,3 +86,6 @@ typedef struct {
 vx_GlProgram vx_glprogram_new(const vx_GlProgramDescriptor*);
 vx_GlProgram vx_glprogram_new_d(const vx_GlProgramDescriptor*);
 void vx_glprogram_free(vx_GlProgram*);
+void vx_glprogram_bind(vx_GlProgram*);
+
+#define vx_glprogram_uniform_f32(_PROG, _NAME, _VAL) vx_glsimpleprogram_uniform_f32(&((_PROG)->_program), (_NAME), (_VAL))

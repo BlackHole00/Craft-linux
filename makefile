@@ -143,7 +143,7 @@ run: all
 	./$(BUILD_DIR)/$(OUTPUT)
 
 analyze: all
-	(valgrind --leak-check=full --show-leak-kinds=all -s ./$(BUILD_DIR)/$(OUTPUT)) &> ./result.txt
+	(valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --show-reachable=yes -s ./$(BUILD_DIR)/$(OUTPUT)) &> ./result.txt
 	cat ./result.txt
 
 static_analyze:

@@ -64,5 +64,3 @@ void vx_glfw_terminate();
 
 vx_Window vx_window_new(vx_WindowDescriptor*);
 void vx_window_run(vx_Window*, vx_UserStatePtr);
-
-int fake_main();
