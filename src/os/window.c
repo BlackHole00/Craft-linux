@@ -1,5 +1,6 @@
 #include "window.h"
 #include <stdio.h>
+#include <string.h>
 
 static bool _is_glfw_initialized = false;
 static struct {
@@ -8,18 +9,24 @@ static struct {
     u32 height;
 } _resize_data;
 static struct {
+    bool grabbed;
     bool moved;
     f64 offset_x;
     f64 offset_y;
     f64 pos_x;
     f64 pos_y;
 } _mouse_data;
-static void _init_mouse_data(u32 window_width, u32 window_height) {
+static vx_WindowKeyState _keys[GLFW_KEY_LAST];
+static void _init_mouse_data(u32 window_width, u32 window_height, bool grab_cursor) {
+    _mouse_data.grabbed     = grab_cursor;
     _mouse_data.moved       = false;
     _mouse_data.offset_x    = 0.0f;
     _mouse_data.offset_y    = 0.0f;
     _mouse_data.pos_x       = window_width / 2.0f;
     _mouse_data.pos_y       = window_height / 2.0f;      
+}
+static void _init_keys() {
+    memset(_keys, 0, sizeof(_keys));
 }
 static void _internal_glfw_resize(GLFWwindow* window, i32 width, i32 height) {
     _resize_data.resized    = true;
@@ -32,6 +39,15 @@ static void _internal_glfw_mouse(GLFWwindow* window, f64 pos_x, f64 pos_y) {
     _mouse_data.offset_y    = _mouse_data.pos_y - pos_y;
     _mouse_data.pos_x       = pos_x;
     _mouse_data.pos_y       = pos_y;
+}
+static void _internal_glfw_keys(GLFWwindow* window, i32 key, i32 scancode, i32 action, i32 mods) {
+    if (action == GLFW_PRESS) {
+        _keys[key].just_pressed = true;
+        _keys[key].pressed = true;
+    } else if (action == GLFW_RELEASE) {
+        _keys[key].pressed = false;
+        _keys[key].just_released = true;
+    }
 }
 static void _check_resize(vx_Window* window) {
     if (_resize_data.resized) {
@@ -47,6 +63,14 @@ static void _apply_mouse_to_helper(vx_WindowInputHelper* helper) {
     helper->mouse.pos_y     = _mouse_data.pos_y;
 
     _mouse_data.moved       = false;
+}
+static void _update_keys() {
+    for (u32 i = 0; i < GLFW_KEY_LAST; i++) {
+        _keys[i].just_pressed = false;
+        if (_keys[i].just_released == true) {
+            _keys[i].just_released = false;
+        }
+    }
 }
 
 void vx_glfw_init() {
@@ -90,6 +114,7 @@ vx_Window vx_window_new(vx_WindowDescriptor* descriptor) {
     /*  Set window callbacks    */
     glfwSetWindowSizeCallback(window.glfw_window, _internal_glfw_resize);
     glfwSetCursorPosCallback(window.glfw_window, _internal_glfw_mouse);
+    glfwSetKeyCallback(window.glfw_window, _internal_glfw_keys);
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window.glfw_window);
@@ -110,7 +135,8 @@ vx_Window vx_window_new(vx_WindowDescriptor* descriptor) {
 
     glfwSetInputMode(window.glfw_window, GLFW_CURSOR, descriptor->grab_cursor ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 
-    _init_mouse_data(descriptor->width, descriptor->height);
+    _init_mouse_data(descriptor->width, descriptor->height, descriptor->grab_cursor);
+    _init_keys();
 
     return window;
 }
@@ -118,6 +144,8 @@ vx_Window vx_window_new(vx_WindowDescriptor* descriptor) {
 void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
     VX_NULL_ASSERT(self);
     vx_WindowInputHelper input_helper;
+    input_helper.keys = _keys;
+    input_helper.mouse.grabbed = _mouse_data.grabbed;
     self->user_state = user_state;
 
     self->descriptor.init(self->user_state, self->glfw_window);
@@ -129,6 +157,7 @@ void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
         self->descriptor.logic(self->user_state, self->glfw_window, &input_helper, 1.0f);
         self->descriptor.draw(self->user_state);
 
+        _update_keys();
         glfwSwapBuffers(self->glfw_window);
         glfwPollEvents();
     }

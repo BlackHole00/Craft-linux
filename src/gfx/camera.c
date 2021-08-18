@@ -62,14 +62,12 @@ void vx_camera_update_view_matrix(vx_Camera* camera) {
     vec3 center;
     glm_vec3_add(camera->position, camera->front, center);
     glm_lookat(camera->position, center, (f32*)_WORLD_UP, camera->view);
-    //glm_lookat(camera->position, (vec3){ 0.0f, 0.0f, 0.0f }, (f32*)_WORLD_UP, camera->view);
 }
 
 void vx_camera_update_proj_matrix(vx_Camera* camera) {
     VX_NULL_ASSERT(camera)
 
     if (camera->type == VX_CAMERA_PERSPECTIVE) {
-        printf("persp: %f %f %f %f\n", camera->p_fov, camera->screen_rateo, camera->near, camera->far);
         glm_perspective(camera->p_fov, camera->screen_rateo, camera->near, camera->far, camera->proj);
     } else {    /*  Orthographic    */
         glm_ortho(camera->o_left, camera->o_right, camera->o_bottom, camera->o_top, camera->near, camera->far, camera->proj);

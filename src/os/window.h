@@ -6,13 +6,23 @@
 typedef void* vx_UserStatePtr;
 
 typedef struct {
+    bool pressed: 1;
+    bool just_pressed: 1;
+    bool just_released: 1;
+} vx_WindowKeyState;
+
+typedef struct {
     struct {
+        bool grabbed;
         bool moved;
         f64 offset_x;
         f64 offset_y;
         f64 pos_x;
         f64 pos_y;
     } mouse;
+    
+    /*  This is temporary. Should use a table...    */
+    vx_WindowKeyState* keys;
 } vx_WindowInputHelper;
 
 typedef enum {

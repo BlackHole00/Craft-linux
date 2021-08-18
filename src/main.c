@@ -7,10 +7,10 @@
 #include <stb_image.h>
 #include <cglm.h>
 
-const u32 GM_WIDTH = 640;
-const u32 GM_HEIGHT = 480;
+const u32 GM_WIDTH = 1080;
+const u32 GM_HEIGHT = 800;
 
-void gm_process_camera_input(vx_Camera*, GLFWwindow*, f64, f64, f64);
+void gm_process_camera_input(vx_Camera*, GLFWwindow*, vx_WindowInputHelper*, f64);
 
 typedef struct {
     vx_GlProgram program;
@@ -92,17 +92,17 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .near           = 0.01f,
         .p_fov          = 100.0f,
         .limit_rotation = true,
-        .position       = { -0.0f, -0.0f, -1.0f },
+        .position       = { -0.0f, -0.0f, -5.0f },
         .rotation       = { 90.0f,  0.0f,  0.0f }
     });
 }
 
 void gm_logic(gm_State* state, GLFWwindow* window, vx_WindowInputHelper* input, f64 delta) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    if (input->keys[GLFW_KEY_ESCAPE].just_released) {
         glfwSetWindowShouldClose(window, 1);
     }
 
-    gm_process_camera_input(&state->camera, window, input->mouse.offset_x, input->mouse.offset_y, delta);
+    gm_process_camera_input(&state->camera, window, input, delta);
 }
 
 void gm_draw(gm_State* state) {
@@ -122,8 +122,8 @@ void gm_draw(gm_State* state) {
 }
 
 void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {
-    printf("resize\n");
     glViewport(0, 0, width, height);
+    vx_camera_set_screen_rateo(&state->camera, width / (f32)height);
 }
 
 void gm_close(gm_State* state, GLFWwindow* window) {
@@ -133,31 +133,38 @@ void gm_close(gm_State* state, GLFWwindow* window) {
     vx_gltexture_free(&state->texture);
 }
 
-void gm_process_camera_input(vx_Camera* camera, GLFWwindow* window, f64 mouse_offset_x, f64 mouse_offset_y, f64 delta) {
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+void gm_process_camera_input(vx_Camera* camera, GLFWwindow* window, vx_WindowInputHelper* input, f64 delta) {
+    if (input->keys[GLFW_KEY_W].pressed) {
         vx_camera_move_forward(camera, delta * 0.1f);
-    } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+    } else if (input->keys[GLFW_KEY_S].pressed) {
         vx_camera_move_backward(camera, delta * 0.1f);
     }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    if (input->keys[GLFW_KEY_D].pressed) {
         vx_camera_move_right(camera, delta * 0.1f);
-    } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    } else if (input->keys[GLFW_KEY_A].pressed) {
         vx_camera_move_left(camera, delta * 0.1f);
     }
+    if (input->keys[GLFW_KEY_SPACE].pressed) {
+        camera->position[VX_Y] -= delta * 0.1f;
+    } else if (input->keys[GLFW_KEY_LEFT_SHIFT].pressed) {
+        camera->position[VX_Y] += delta * 0.1f;
+    }
 
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+    if (input->keys[GLFW_KEY_LEFT].pressed) {
         vx_camera_rotate_x(camera,  delta);
-    } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+    } else if (input->keys[GLFW_KEY_RIGHT].pressed) {
         vx_camera_rotate_x(camera, -delta);
     }
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+    if (input->keys[GLFW_KEY_DOWN].pressed) {
         vx_camera_rotate_y(camera, -delta);
-    } else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+    } else if (input->keys[GLFW_KEY_UP].pressed) {
         vx_camera_rotate_y(camera,  delta);
     }
 
-    vx_camera_rotate_x(camera, mouse_offset_x);
-    vx_camera_rotate_y(camera, -mouse_offset_y);
+    if (input->mouse.grabbed) {
+        vx_camera_rotate_x(camera, input->mouse.offset_x * 0.5f);
+        vx_camera_rotate_y(camera, -input->mouse.offset_y * 0.5f);
+    }
 }
 
 int main(void)
@@ -167,15 +174,17 @@ int main(void)
 #endif
 
     vx_WindowDescriptor descriptor = VX_DEFAULT(vx_WindowDescriptor);
-    descriptor.title    = "OpenGL";
+    descriptor.title        = "OpenGL";
     descriptor.transparent_framebuffer = true;
-    descriptor.resizable = true;
-    descriptor.grab_cursor = true;
-    descriptor.init     = (vx_Callback)gm_init;
-    descriptor.logic    = (vx_Callback)gm_logic;
-    descriptor.draw     = (vx_Callback)gm_draw;
-    descriptor.resize   = (vx_Callback)gm_resize;
-    descriptor.close    = (vx_Callback)gm_close;
+    descriptor.resizable    = true;
+    descriptor.grab_cursor  = true;
+    descriptor.width        = GM_WIDTH;
+    descriptor.height       = GM_HEIGHT;
+    descriptor.init         = (vx_Callback)gm_init;
+    descriptor.logic        = (vx_Callback)gm_logic;
+    descriptor.draw         = (vx_Callback)gm_draw;
+    descriptor.resize       = (vx_Callback)gm_resize;
+    descriptor.close        = (vx_Callback)gm_close;
 
     vx_Window window = vx_window_new(&descriptor);
 
