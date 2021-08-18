@@ -89,3 +89,4 @@ void vx_glprogram_free(vx_GlProgram*);
 void vx_glprogram_bind(vx_GlProgram*);
 
 #define vx_glprogram_uniform_f32(_PROG, _NAME, _VAL) vx_glsimpleprogram_uniform_f32(&((_PROG)->_program), (_NAME), (_VAL))
+#define vx_glprogram_uniform_mat4(_PROG, _NAME, _VAL) vx_glsimpleprogram_uniform_mat4(&((_PROG)->_program), (_NAME), (_VAL))

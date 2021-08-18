@@ -36,6 +36,7 @@ typedef enum {
 /*typedef enum {
     //  Todo: for now i'm using vx_GlTextureFormat. Look at http://docs.gl/gl4/glTexImage2D for implementing.
 } _vx_GlTextureInternalFormat;*/
+typedef vx_GlTextureFormat vx_GltextureInternalFormat;
 
 typedef struct {
     vx_GlTextureFormat format;
@@ -47,7 +48,7 @@ typedef struct {
 
 typedef struct {
     vx_GlTextureType type;
-    vx_GlTextureFormat format;  /*  this is used as an internal format. */
+    vx_GltextureInternalFormat format;  /*  this is used as an internal format. */
     GLuint texture_unit;
     
     vx_GlTextureWarp warp_s;

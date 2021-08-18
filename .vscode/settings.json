@@ -36,6 +36,9 @@
         "texture.h": "c",
         "tostring.h": "c",
         "stdlib.h": "c",
-        "template.h": "c"
+        "template.h": "c",
+        "camera.h": "c",
+        "base.h": "c",
+        "random": "c"
     }
 }

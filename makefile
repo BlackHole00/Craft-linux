@@ -15,15 +15,16 @@ OUTPUT    = app
 GLAD_INCLUDE = -I"libs/glad/includes"
 STB_INCLUDE  = -I"libs/stb/includes"
 FLOAT16_INCLUDE = -I"libs/float16/includes"
-HMM_INCLUDE	 = -I"libs/handmade_math/includes"
+CGLM_INCLUDE = -I"libs/cglm/includes"
+CGLM_LIB_PATH = -L"libs/cglm/libs"
 
-INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE) $(STB_INCLUDE) $(FLOAT16_INCLUDE) $(HMM_INCLUDE)
-LIBS      = -lglfw -lGL -ldl -lm
+INCLUDES  = -I"/usr/include" $(GLAD_INCLUDE) $(STB_INCLUDE) $(FLOAT16_INCLUDE) $(HMM_INCLUDE) $(CGLM_INCLUDE) $(CGLM_LIB_PATH)
+LIBS      = -lglfw -lcglm -lGL -ldl -lm
 
 ifeq ($(PROFILE), 0)
-ARGS      = -std=c99 -g -O0 -D _DEBUG $(LIBS) $(INCLUDES)
+ARGS      = -Wall -std=c99 -g -O0 -D _DEBUG $(LIBS) $(INCLUDES)
 else
-ARGS	  = -std=c99 -O3 -D _RELEASE $(LIBS) $(INCLUDES)
+ARGS	  = -Wall -std=c99 -O3 -D _RELEASE $(LIBS) $(INCLUDES)
 endif
 
 _: all
@@ -42,10 +43,10 @@ OS_BUILD_DIR     = $(BUILD_DIR)/os
 OS_OBJ			 = $(OS_BUILD_DIR)/window.o
 
 #	GFX
-gfx:	base.o gl_error.o shader.o program.o buffer.o layout.o texture.o sprogram.o;
+gfx:	base.o gl_error.o shader.o program.o buffer.o layout.o texture.o sprogram.o camera.o;
 GFX_SRC_DIR		 = $(SRC_DIR)/gfx
 GFX_BUILD_DIR    = $(BUILD_DIR)/gfx
-GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/gl_error.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o $(GFX_BUILD_DIR)/base/texture.o $(GFX_BUILD_DIR)/base/sprogram.o
+GFX_OBJ			 = $(GFX_BUILD_DIR)/base/base.o $(GFX_BUILD_DIR)/base/gl_error.o $(GFX_BUILD_DIR)/base/shader.o $(GFX_BUILD_DIR)/base/program.o $(GFX_BUILD_DIR)/base/buffer.o $(GFX_BUILD_DIR)/base/layout.o $(GFX_BUILD_DIR)/base/texture.o $(GFX_BUILD_DIR)/base/sprogram.o $(GFX_BUILD_DIR)/camera.o
 
 #	GLAD
 glad:	glad.o;
@@ -64,12 +65,6 @@ float16: float16.o;
 FLOAT16_SRC_DIR	 = libs/float16/src
 FLOAT16_BUILD_DIR	= $(BUILD_DIR)/libs
 FLOAT16_OBJ		 = $(FLOAT16_BUILD_DIR)/float16.o
-
-#	HANDMADEMATH (HMM)
-hmm: hmm.o;
-HMM_SRC_DIR		 = libs/handmade_math/src
-HMM_BUILD_DIR	 = $(BUILD_DIR)/libs
-HMM_OBJ		 	 = $(HMM_BUILD_DIR)/hmm.o
 
 #	MAIN
 main: 	main.o;
@@ -114,17 +109,17 @@ texture.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/texture.c  -o $(GFX_BUILD_DIR)/base/texture.o  $(ARGS)
 sprogram.o:
 	$(CC) -c $(GFX_SRC_DIR)/base/sprogram.c -o $(GFX_BUILD_DIR)/base/sprogram.o $(ARGS)
+camera.o:
+	$(CC) -c $(GFX_SRC_DIR)/camera.c 		-o $(GFX_BUILD_DIR)/camera.o 		$(ARGS)
 glad.o:
 	$(CC) -c $(GLAD_SRC_DIR)/glad.c			-o $(GLAD_BUILD_DIR)/glad.o			$(ARGS)
 stb_impl.o:
 	$(CC) -c $(STB_SRC_DIR)/stb_impl.c		-o $(STB_BUILD_DIR)/stb_impl.o		$(ARGS)
 float16.o:
 	$(CC) -c $(FLOAT16_SRC_DIR)/float16.c	-o $(FLOAT16_BUILD_DIR)/float16.o	$(ARGS)
-hmm.o:
-	$(CC) -c $(HMM_SRC_DIR)/handmade_math.c	-o $(HMM_BUILD_DIR)/hmm.o			$(ARGS)
 
 #####  TASKS  #####
-OBJS = $(HMM_OBJ) $(FLOAT16_OBJ) $(STB_OBJ) $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
+OBJS = $(FLOAT16_OBJ) $(STB_OBJ) $(GLAD_OBJ) $(UTILIS_OBJ) $(OS_OBJ) $(GFX_OBJ) $(MAIN_OBJ)
 
 all: clean build_prepare build;
 
@@ -136,7 +131,7 @@ build_prepare:
 	rm -rf $(BUILD_DIR)/$(RES_DIR)
 	cp -r $(RES_DIR) $(BUILD_DIR)/$(RES_DIR)
 
-build: hmm float16 stb glad utilis os gfx main
+build: float16 stb glad utilis os gfx main
 	$(CC) $(OBJS) -o $(BUILD_DIR)/$(OUTPUT) $(ARGS)
 
 run: all

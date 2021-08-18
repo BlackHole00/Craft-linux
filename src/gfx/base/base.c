@@ -13,4 +13,6 @@ usize vx_gltype_size(vx_GlType type) {
         default:
             VX_PANIC("Unknown type!");
     };
+
+    return 0;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "shader.h"
+#include <cglm.h>
 
 typedef struct {
     char* uniform_name;
@@ -31,4 +32,5 @@ void vx_glsimpleprogram_bind(const vx_GlSimpleProgram*);
 void vx_glsimpleprogram_unbind();
 
 /*  In the future I'll add more types...    */
-void VX_TEMPLATE_NAME(f32, vx_glsimpleprogram_uniform)(vx_GlSimpleProgram*, char*, f32);
+void vx_glsimpleprogram_uniform_f32(vx_GlSimpleProgram*, char*, f32);
+void vx_glsimpleprogram_uniform_mat4(vx_GlSimpleProgram*, char*, mat4);

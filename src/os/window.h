@@ -5,6 +5,16 @@
 
 typedef void* vx_UserStatePtr;
 
+typedef struct {
+    struct {
+        bool moved;
+        f64 offset_x;
+        f64 offset_y;
+        f64 pos_x;
+        f64 pos_y;
+    } mouse;
+} vx_WindowInputHelper;
+
 typedef enum {
     VX_GL_CORE_PROFILE = GLFW_OPENGL_CORE_PROFILE,
     VX_GL_COMPAT_PROFILE = GLFW_OPENGL_COMPAT_PROFILE
@@ -26,11 +36,12 @@ typedef struct {
     bool decorated;
     bool transparent_framebuffer;
     bool resizable;
+    bool grab_cursor;
 
     vx_WindowGlVersion gl_version;
 
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*) init;
-    VX_CALLBACK(vx_UserStatePtr, GLFWwindow*, f64) logic;
+    VX_CALLBACK(vx_UserStatePtr, GLFWwindow*, vx_WindowInputHelper*, f64) logic;
     VX_CALLBACK(vx_UserStatePtr) draw;
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*, u32, u32) resize;
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*) close;
@@ -49,6 +60,7 @@ VX_CREATE_DEFAULT(vx_WindowDescriptor,
     .fullscreen = 0,
     .resizable  = false,
     .decorated  = true,
+    .grab_cursor = false,
     .gl_version = VX_DEFAULT(vx_WindowGlVersion),
     .transparent_framebuffer = false,
     .init       = NULL,

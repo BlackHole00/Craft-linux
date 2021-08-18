@@ -8,3 +8,4 @@
 #include "base/texture.h"
 #include "base/gl_error.h"
 #include "base/program.h"
+#include "camera.h"

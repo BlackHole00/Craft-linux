@@ -80,11 +80,19 @@ void vx_glsimpleprogram_unbind() {
     glUseProgram(0);
 }
 
-void VX_TEMPLATE_NAME(f32, vx_glsimpleprogram_uniform)(vx_GlSimpleProgram* program, char* uniform_name, f32 value) {
+void vx_glsimpleprogram_uniform_f32(vx_GlSimpleProgram* program, char* uniform_name, f32 value) {
     VX_NULL_ASSERT(program);
 
     vx_glsimpleprogram_bind(program);
     glUniform1f(get_uniform_location(program, uniform_name), value);
+    VX_GL_CHECK_ERRORS()
+}
+
+void vx_glsimpleprogram_uniform_mat4(vx_GlSimpleProgram* program, char* uniform_name, mat4 value) {
+    VX_NULL_ASSERT(program)
+
+    vx_glsimpleprogram_bind(program);
+    glUniformMatrix4fv(get_uniform_location(program, uniform_name), 1, GL_FALSE, (const f32*)value);
     VX_GL_CHECK_ERRORS()
 }
 

@@ -66,7 +66,13 @@ void vx_gltexture_data_from_path(const vx_GlTexture* texture, const char* path) 
 
     vx_GlTextureData data;
     i32 nr_channels;
-    data.data = stbi_load(path, &data.width, &data.height, &nr_channels, 0);
+    {
+        i32 width;
+        i32 height;
+        data.data   = stbi_load(path, &width, &height, &nr_channels, 0);
+        data.width  = (u32)width;
+        data.height = (u32)height;
+    }
 
     data.encoding_type = VX_GL_BYTE;
 

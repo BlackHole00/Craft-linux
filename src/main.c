@@ -5,13 +5,19 @@
 #include <string.h>
 #include <math.h>
 #include <stb_image.h>
-#include <HandmadeMath.h>
+#include <cglm.h>
+
+const u32 GM_WIDTH = 640;
+const u32 GM_HEIGHT = 480;
+
+void gm_process_camera_input(vx_Camera*, GLFWwindow*, f64, f64, f64);
 
 typedef struct {
     vx_GlProgram program;
     vx_GlBuffer  vbuffer;
     vx_GlBuffer  ibuffer;
     vx_GlTexture texture;
+    vx_Camera    camera;
 } gm_State;
 
 void gm_init(gm_State* state, GLFWwindow* window) {
@@ -23,7 +29,6 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .type = VX_GL_FRAGMENT_SHADER,
         .shader_path = "res/shaders/basic.fs"
     });
-    VX_GL_CHECK_ERRORS()
 
     f32 data[] = {
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
@@ -79,12 +84,25 @@ void gm_init(gm_State* state, GLFWwindow* window) {
             }
         }
     });
+
+    state->camera = vx_camera_new(&(vx_CameraDescriptor){
+        .type           = VX_CAMERA_PERSPECTIVE,
+        .screen_rateo   = GM_WIDTH / (f32)GM_HEIGHT,
+        .far            = 100.0f,
+        .near           = 0.01f,
+        .p_fov          = 100.0f,
+        .limit_rotation = true,
+        .position       = { -0.0f, -0.0f, -1.0f },
+        .rotation       = { 90.0f,  0.0f,  0.0f }
+    });
 }
 
-void gm_logic(gm_State* state, GLFWwindow* window, f64 delta) {
-    if (glfwGetKey(window, glfwGetKeyScancode(GLFW_KEY_ESCAPE)) == GLFW_PRESS) {
-        glfwWindowShouldClose(window);
+void gm_logic(gm_State* state, GLFWwindow* window, vx_WindowInputHelper* input, f64 delta) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, 1);
     }
+
+    gm_process_camera_input(&state->camera, window, input->mouse.offset_x, input->mouse.offset_y, delta);
 }
 
 void gm_draw(gm_State* state) {
@@ -96,7 +114,7 @@ void gm_draw(gm_State* state) {
     vx_glbuffer_bind(&state->ibuffer);
     vx_gltexture_bind(&state->texture);
 
-    VX_T(f32, vx_glprogram_uniform)(&state->program, "uAlpha", sin(glfwGetTime()));
+    vx_camera_bind(&state->camera, &state->program);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
@@ -104,6 +122,7 @@ void gm_draw(gm_State* state) {
 }
 
 void gm_resize(gm_State* state, GLFWwindow* window, u32 width, u32 height) {
+    printf("resize\n");
     glViewport(0, 0, width, height);
 }
 
@@ -112,6 +131,33 @@ void gm_close(gm_State* state, GLFWwindow* window) {
     vx_glbuffer_free(&state->vbuffer);
     vx_glbuffer_free(&state->ibuffer);
     vx_gltexture_free(&state->texture);
+}
+
+void gm_process_camera_input(vx_Camera* camera, GLFWwindow* window, f64 mouse_offset_x, f64 mouse_offset_y, f64 delta) {
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        vx_camera_move_forward(camera, delta * 0.1f);
+    } else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        vx_camera_move_backward(camera, delta * 0.1f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        vx_camera_move_right(camera, delta * 0.1f);
+    } else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        vx_camera_move_left(camera, delta * 0.1f);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        vx_camera_rotate_x(camera,  delta);
+    } else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        vx_camera_rotate_x(camera, -delta);
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        vx_camera_rotate_y(camera, -delta);
+    } else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        vx_camera_rotate_y(camera,  delta);
+    }
+
+    vx_camera_rotate_x(camera, mouse_offset_x);
+    vx_camera_rotate_y(camera, -mouse_offset_y);
 }
 
 int main(void)
@@ -124,6 +170,7 @@ int main(void)
     descriptor.title    = "OpenGL";
     descriptor.transparent_framebuffer = true;
     descriptor.resizable = true;
+    descriptor.grab_cursor = true;
     descriptor.init     = (vx_Callback)gm_init;
     descriptor.logic    = (vx_Callback)gm_logic;
     descriptor.draw     = (vx_Callback)gm_draw;
