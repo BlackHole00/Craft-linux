@@ -3,7 +3,7 @@
 
 #include "gl_error.h"
 
-static GLuint get_uniform_location(vx_GlSimpleProgram* program, char* uniform_name) {
+static GLuint get_uniform_location(vx_GlSimpleProgram* program, const char* uniform_name) {
     VX_NULL_ASSERT(program);
     VX_NULL_ASSERT(uniform_name);
     
@@ -80,7 +80,7 @@ void vx_glsimpleprogram_unbind() {
     glUseProgram(0);
 }
 
-void vx_glsimpleprogram_uniform_f32(vx_GlSimpleProgram* program, char* uniform_name, f32 value) {
+void vx_glsimpleprogram_uniform_f32(vx_GlSimpleProgram* program, const char* uniform_name, const f32 value) {
     VX_NULL_ASSERT(program);
 
     vx_glsimpleprogram_bind(program);
@@ -88,7 +88,7 @@ void vx_glsimpleprogram_uniform_f32(vx_GlSimpleProgram* program, char* uniform_n
     VX_GL_CHECK_ERRORS()
 }
 
-void vx_glsimpleprogram_uniform_mat4(vx_GlSimpleProgram* program, char* uniform_name, mat4 value) {
+void vx_glsimpleprogram_uniform_mat4(vx_GlSimpleProgram* program, const char* uniform_name, const mat4 value) {
     VX_NULL_ASSERT(program)
 
     vx_glsimpleprogram_bind(program);

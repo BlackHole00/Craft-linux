@@ -4,7 +4,7 @@
 #include <cglm.h>
 
 typedef struct {
-    char* uniform_name;
+    const char* uniform_name;
     GLuint location;
 } vx_GlProgramUniformLocationRecord;
 _VX_OPTION_CREATE_PROT_FOR_TYPE(vx_GlProgramUniformLocationRecord)
@@ -32,5 +32,5 @@ void vx_glsimpleprogram_bind(const vx_GlSimpleProgram*);
 void vx_glsimpleprogram_unbind();
 
 /*  In the future I'll add more types...    */
-void vx_glsimpleprogram_uniform_f32(vx_GlSimpleProgram*, char*, f32);
-void vx_glsimpleprogram_uniform_mat4(vx_GlSimpleProgram*, char*, mat4);
+void vx_glsimpleprogram_uniform_f32(vx_GlSimpleProgram*, const char*, const f32);
+void vx_glsimpleprogram_uniform_mat4(vx_GlSimpleProgram*, const char*, const mat4);

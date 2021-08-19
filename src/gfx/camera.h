@@ -6,9 +6,6 @@
 #include "base/program.h"
 #include <cglm.h>
 
-#define _VX_CAMERA_VIEW_UNIFORM_NAME "uView"
-#define _VX_CAMERA_PROJ_UNIFORM_NAME "uProj"
-
 typedef enum {
     VX_CAMERA_PERSPECTIVE = 0,
     VX_CAMERA_ORTHOGRAPHIC = 1
@@ -33,6 +30,9 @@ typedef struct {
         };
     };
 
+    const char* view_uniform_name;
+    const char* proj_uniform_name;
+
     vec3 position;
     vec3 rotation;
 } vx_CameraDescriptor;
@@ -48,6 +48,8 @@ typedef struct {
         f32 p_fov;
         f32 o_left, o_right, o_top, o_bottom;
     };
+    const char* view_uniform_name;
+    const char* proj_uniform_name;
 
     vec3 position;
     vec3 rotation;

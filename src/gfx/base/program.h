@@ -8,7 +8,7 @@ typedef enum {
     VX_CULL_NONE        = 0,
     VX_GL_FRONT         = GL_FRONT,
     VX_GL_BACK          = GL_BACK,
-    VX_GL_FRONT_AND_BACK    = GL_FRONT_AND_BACK
+    VX_GL_FRONT_AND_BACK = GL_FRONT_AND_BACK
 } vx_GlCullFace;
 
 typedef enum {
@@ -88,5 +88,13 @@ vx_GlProgram vx_glprogram_new_d(const vx_GlProgramDescriptor*);
 void vx_glprogram_free(vx_GlProgram*);
 void vx_glprogram_bind(vx_GlProgram*);
 
-#define vx_glprogram_uniform_f32(_PROG, _NAME, _VAL) vx_glsimpleprogram_uniform_f32(&((_PROG)->_program), (_NAME), (_VAL))
-#define vx_glprogram_uniform_mat4(_PROG, _NAME, _VAL) vx_glsimpleprogram_uniform_mat4(&((_PROG)->_program), (_NAME), (_VAL))
+void static inline vx_glprogram_uniform_f32(vx_GlProgram* program, const char* name, const f32 value) {
+    VX_NULL_ASSERT(program);
+    vx_glprogram_bind(program);
+    vx_glsimpleprogram_uniform_f32(&program->_program, name, value);
+}
+void static inline vx_glprogram_uniform_mat4(vx_GlProgram* program, const char* name, const mat4 value) {
+    VX_NULL_ASSERT(program);
+    vx_glprogram_bind(program);
+    vx_glsimpleprogram_uniform_mat4(&program->_program, name, value);
+}

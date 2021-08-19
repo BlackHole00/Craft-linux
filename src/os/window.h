@@ -48,6 +48,7 @@ typedef struct {
     bool resizable;
     bool grab_cursor;
 
+    u32 swap_interval;
     vx_WindowGlVersion gl_version;
 
     VX_CALLBACK(vx_UserStatePtr, GLFWwindow*) init;
@@ -71,6 +72,7 @@ VX_CREATE_DEFAULT(vx_WindowDescriptor,
     .resizable  = false,
     .decorated  = true,
     .grab_cursor = false,
+    .swap_interval = 0,
     .gl_version = VX_DEFAULT(vx_WindowGlVersion),
     .transparent_framebuffer = false,
     .init       = NULL,

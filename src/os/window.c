@@ -138,14 +138,24 @@ vx_Window vx_window_new(vx_WindowDescriptor* descriptor) {
     _init_mouse_data(descriptor->width, descriptor->height, descriptor->grab_cursor);
     _init_keys();
 
+    glfwSwapInterval(descriptor->swap_interval);
+
     return window;
 }
 
 void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
     VX_NULL_ASSERT(self);
+
     vx_WindowInputHelper input_helper;
     input_helper.keys = _keys;
     input_helper.mouse.grabbed = _mouse_data.grabbed;
+
+    f64 last_time       = glfwGetTime();
+    f64 current_time    = 0.0f;
+    f64 delta           = 0.0f;
+    f64 counter         = 0.0f; /*  Frames per second.  */
+    u64 frames          = 0;
+
     self->user_state = user_state;
 
     self->descriptor.init(self->user_state, self->glfw_window);
@@ -154,7 +164,22 @@ void vx_window_run(vx_Window* self, vx_UserStatePtr user_state) {
         _check_resize(self);
         _apply_mouse_to_helper(&input_helper);
 
-        self->descriptor.logic(self->user_state, self->glfw_window, &input_helper, 1.0f);
+        current_time = glfwGetTime();
+        delta = current_time - last_time;
+        last_time = current_time;
+
+        counter += delta;
+        frames++;
+        if (counter >= 1.0f) {
+            char title[256];
+            snprintf(title, 255, "%s (%ld fps - %4.2lf ms)", self->descriptor.title, frames, counter / (f64)frames);
+            glfwSetWindowTitle(self->glfw_window, title);
+
+            frames = 0;
+            counter = 0.0f;
+        }
+
+        self->descriptor.logic(self->user_state, self->glfw_window, &input_helper, delta);
         self->descriptor.draw(self->user_state);
 
         _update_keys();

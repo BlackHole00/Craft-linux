@@ -26,6 +26,10 @@ static void _update_front(vx_Camera* camera) {
 }
 
 vx_Camera vx_camera_new(const vx_CameraDescriptor* descriptor) {
+    VX_NULL_ASSERT(descriptor);
+    VX_NULL_ASSERT(descriptor->view_uniform_name);
+    VX_NULL_ASSERT(descriptor->proj_uniform_name);
+    
     vx_Camera camera;
 
     camera.type         = descriptor->type;
@@ -41,6 +45,8 @@ vx_Camera vx_camera_new(const vx_CameraDescriptor* descriptor) {
         camera.o_top    = descriptor->o_top;
         camera.o_bottom = descriptor->o_bottom;
     }
+    camera.view_uniform_name = descriptor->view_uniform_name;
+    camera.proj_uniform_name = descriptor->proj_uniform_name;
 
     glm_vec3_copy((f32*)descriptor->position, camera.position);
     glm_vec3_copy((f32*)descriptor->rotation, camera.rotation);
@@ -87,8 +93,8 @@ void vx_camera_bind(vx_Camera* camera, vx_GlProgram* program) {
 
     //vx_camera_update_proj_matrix(camera);
     vx_camera_update_view_matrix(camera);
-    vx_glprogram_uniform_mat4(program, _VX_CAMERA_VIEW_UNIFORM_NAME, camera->view);
-    vx_glprogram_uniform_mat4(program, _VX_CAMERA_PROJ_UNIFORM_NAME, camera->proj);
+    vx_glprogram_uniform_mat4(program, camera->view_uniform_name, camera->view);
+    vx_glprogram_uniform_mat4(program, camera->proj_uniform_name, camera->proj);
 }
 
 void vx_camera_bind_glsimpleprogram(vx_Camera* camera, vx_GlSimpleProgram* program) {
@@ -96,8 +102,8 @@ void vx_camera_bind_glsimpleprogram(vx_Camera* camera, vx_GlSimpleProgram* progr
     VX_NULL_ASSERT(program);
 
     vx_camera_update_view_matrix(camera);
-    vx_glsimpleprogram_uniform_mat4(program, _VX_CAMERA_VIEW_UNIFORM_NAME, camera->view);
-    vx_glsimpleprogram_uniform_mat4(program, _VX_CAMERA_PROJ_UNIFORM_NAME, camera->proj);
+    vx_glsimpleprogram_uniform_mat4(program, camera->view_uniform_name, camera->view);
+    vx_glsimpleprogram_uniform_mat4(program, camera->proj_uniform_name, camera->proj);
 }
 
 void vx_camera_move_forward(vx_Camera* camera, f32 amount) {

@@ -13,11 +13,12 @@ const u32 GM_HEIGHT = 800;
 void gm_process_camera_input(vx_Camera*, GLFWwindow*, vx_WindowInputHelper*, f64);
 
 typedef struct {
-    vx_GlProgram program;
-    vx_GlBuffer  vbuffer;
-    vx_GlBuffer  ibuffer;
-    vx_GlTexture texture;
-    vx_Camera    camera;
+    vx_GlProgram    program;
+    vx_GlBuffer     vbuffer;
+    vx_GlBuffer     ibuffer;
+    vx_GlTexture    texture;
+    vx_Camera       camera;
+    vx_Mesh         mesh;
 } gm_State;
 
 void gm_init(gm_State* state, GLFWwindow* window) {
@@ -56,6 +57,18 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .data_size = sizeof(indices)
     });
 
+    state->mesh = vx_mesh_new(&(vx_MeshDescriptor){
+        .vertex_usage = VX_GL_STATIC_DRAW,
+        .index_usage  = VX_GL_STATIC_DRAW,
+        .model_uniform_name = VX_DEFAULT_MODEL_UNIFORM_NAME
+    }, &(vx_GlBufferData){
+        .data = data,
+        .data_size = sizeof(data)
+    }, &(vx_GlBufferData){
+        .data = indices,
+        .data_size = sizeof(indices)
+    }, NULL);
+
     state->texture = vx_gltexture_from_path(&(vx_GlTextureDescriptor){
         .type = VX_GL_TEXTURE_2D,
         .format = VX_GL_RGB,
@@ -93,7 +106,9 @@ void gm_init(gm_State* state, GLFWwindow* window) {
         .p_fov          = 100.0f,
         .limit_rotation = true,
         .position       = { -0.0f, -0.0f, -5.0f },
-        .rotation       = { 90.0f,  0.0f,  0.0f }
+        .rotation       = { 90.0f,  0.0f,  0.0f },
+        .view_uniform_name = VX_DEFAULT_VIEW_UNIFORM_NAME,
+        .proj_uniform_name = VX_DEFAULT_PROJ_UNIFORM_NAME
     });
 }
 
@@ -110,9 +125,10 @@ void gm_draw(gm_State* state) {
     glClear(GL_COLOR_BUFFER_BIT);
 
     vx_glprogram_bind(&state->program);
-    vx_glbuffer_bind(&state->vbuffer);
-    vx_glbuffer_bind(&state->ibuffer);
+    //vx_glbuffer_bind(&state->vbuffer);
+    //vx_glbuffer_bind(&state->ibuffer);
     vx_gltexture_bind(&state->texture);
+    vx_mesh_bind(&state->mesh, &state->program);
 
     vx_camera_bind(&state->camera, &state->program);
 
@@ -131,39 +147,40 @@ void gm_close(gm_State* state, GLFWwindow* window) {
     vx_glbuffer_free(&state->vbuffer);
     vx_glbuffer_free(&state->ibuffer);
     vx_gltexture_free(&state->texture);
+    vx_mesh_free(&state->mesh);
 }
 
 void gm_process_camera_input(vx_Camera* camera, GLFWwindow* window, vx_WindowInputHelper* input, f64 delta) {
     if (input->keys[GLFW_KEY_W].pressed) {
-        vx_camera_move_forward(camera, delta * 0.1f);
+        vx_camera_move_forward(camera, delta * 5.0f);
     } else if (input->keys[GLFW_KEY_S].pressed) {
-        vx_camera_move_backward(camera, delta * 0.1f);
+        vx_camera_move_backward(camera, delta * 5.0f);
     }
     if (input->keys[GLFW_KEY_D].pressed) {
-        vx_camera_move_right(camera, delta * 0.1f);
+        vx_camera_move_right(camera, delta * 5.0f);
     } else if (input->keys[GLFW_KEY_A].pressed) {
-        vx_camera_move_left(camera, delta * 0.1f);
+        vx_camera_move_left(camera, delta * 5.0f);
     }
     if (input->keys[GLFW_KEY_SPACE].pressed) {
-        camera->position[VX_Y] -= delta * 0.1f;
+        camera->position[VX_Y] -= delta * 5.0f;
     } else if (input->keys[GLFW_KEY_LEFT_SHIFT].pressed) {
-        camera->position[VX_Y] += delta * 0.1f;
+        camera->position[VX_Y] += delta * 5.0f;
     }
 
     if (input->keys[GLFW_KEY_LEFT].pressed) {
-        vx_camera_rotate_x(camera,  delta);
+        vx_camera_rotate_x(camera,  delta * 75.0f);
     } else if (input->keys[GLFW_KEY_RIGHT].pressed) {
-        vx_camera_rotate_x(camera, -delta);
+        vx_camera_rotate_x(camera, -delta * 75.0f);
     }
     if (input->keys[GLFW_KEY_DOWN].pressed) {
-        vx_camera_rotate_y(camera, -delta);
+        vx_camera_rotate_y(camera, -delta * 75.0f);
     } else if (input->keys[GLFW_KEY_UP].pressed) {
-        vx_camera_rotate_y(camera,  delta);
+        vx_camera_rotate_y(camera,  delta * 75.0f);
     }
 
     if (input->mouse.grabbed) {
-        vx_camera_rotate_x(camera, input->mouse.offset_x * 0.5f);
-        vx_camera_rotate_y(camera, -input->mouse.offset_y * 0.5f);
+        vx_camera_rotate_x(camera, input->mouse.offset_x * 0.25f);
+        vx_camera_rotate_y(camera, -input->mouse.offset_y * 0.25f);
     }
 }
 
@@ -177,7 +194,7 @@ int main(void)
     descriptor.title        = "OpenGL";
     descriptor.transparent_framebuffer = true;
     descriptor.resizable    = true;
-    descriptor.grab_cursor  = true;
+    descriptor.grab_cursor  = false;
     descriptor.width        = GM_WIDTH;
     descriptor.height       = GM_HEIGHT;
     descriptor.init         = (vx_Callback)gm_init;
